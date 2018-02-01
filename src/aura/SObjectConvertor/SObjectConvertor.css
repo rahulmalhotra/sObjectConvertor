@@ -1,0 +1,27 @@
+.THIS {
+}
+.THIS .container {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+.THIS .right {
+	margin-right: 1em;
+}
+.THIS .left {
+	margin-left: 1em;
+}
+.THIS .or {
+	margin: 2em 0;
+	text-align: center;
+}
+.THIS .showFields {
+	margin: 1.5em 0;
+}
+.THIS .listStyle {
+	padding: 0.5rem; 
+	border-bottom: 1px solid white;
+	background: rgb(22, 50, 92);
+}
+.THIS .convertButton {
+	background-color: green;
+}
