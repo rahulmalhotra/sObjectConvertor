@@ -5,6 +5,7 @@
 
 	getSObjectFields: function(component, event, helper) {
 		helper.fetchSObjectFields(component, event, helper);
+		component.refreshMap(true);
 	},
 
 	searchFocused: function(component, event, helper) {
@@ -47,6 +48,20 @@
 
 	convertRecords: function(component, event, helper) {
 		helper.convertRecords(component, event, helper);		
-	}
+	},
 
+	refreshMap: function(component, event, helper) {
+		var params = event.getParam('arguments');
+		var initial = params.initial;
+		var sourceSObject = component.find('sourceSObject').get('v.value');
+		var destinationSObject = component.find('destinationSObject').get('v.value');
+		if(sourceSObject!=undefined && destinationSObject!=undefined && sourceSObject!='' && destinationSObject!='') {
+			if(initial) {
+				var recordMap = component.get('v.recordMap');
+				console.log(recordMap);
+			} else {
+
+			}
+		}
+	}
 })

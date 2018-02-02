@@ -93,12 +93,17 @@
 	},
 
 	convertRecords: function(component, event, helper) {
-		var recordList = component.get('v.recordList');
-		var mapping = component.get('v.recordMapping');
+		var recordIdList = component.get('v.recordIdList');
+		var mapping = component.get('v.sObjectFieldMap');
+		var sourceObj = component.find('sourceSObject').get('v.value');
+		var destinationObj = component.find('destinationSObject').get('v.value');
 		var inputData = {
-			recordList: recordList,
-			mapping: mapping
+			recordIdList: recordList,
+			mapping: mapping,
+			sourceObj: sourceObj,
+			destinationObj: destinationObj
 		};
+		console.log(inputData);
 		var inputDataString = JSON.stringify(inputData);
 	}
 })

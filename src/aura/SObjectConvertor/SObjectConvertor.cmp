@@ -1,12 +1,16 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="SObjectConvertorController"  access="global">
 	<aura:handler name="init" action="{!c.getInitialData}" value="{!this}"></aura:handler>
 	<aura:attribute name="sObjectList" type="List"></aura:attribute>
-	<aura:attribute name="sObjectFieldMap" type="Map"></aura:attribute>
+	<aura:attribute name="sObjectFieldMap" type="List"></aura:attribute>
 	<aura:attribute name="sourceSObjectFields" type="List"></aura:attribute>
 	<aura:attribute name="destinationSObjectFields" type="List"></aura:attribute>	
 	<aura:attribute name="searchResults" type="List"></aura:attribute>
-    <aura:attribute name="recordList" type="List"></aura:attribute>
+    <aura:attribute name="recordIdList" type="List"></aura:attribute>
+    <aura:attribute name="recordMap" type="List"></aura:attribute>
     <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}" ></aura:method>
+    <aura:method name="refreshMap" action="{!c.refreshMap}" >
+        <aura:attribute name="initial" type="Boolean" ></aura:attribute>
+    </aura:method>
     <lightning:card title="My Title">
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_1-of-2 container">
@@ -109,70 +113,40 @@
                     </div>
                 </div>
             </div>
-            <div class="slds-col slds-size_1-of-1">
-                <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Source Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
-                            </div>
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Source Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
-                            </div>
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Source Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
+            <aura:iteration var="fieldMap" items="{!v.recordMap}">
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 container">
+                                    <br />
+                                    <lightning:select name="selectItem" label="Source Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.sourceObj}" >
+    				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
+    										<option value="{!sObjectField}">{!sObjectField}</option>
+    				                	</aura:iteration>
+                                    </lightning:select>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2">
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Destination Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
-                            </div>
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Destination Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
-                            </div>
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <br />
-                                <lightning:select name="selectItem" label="Destination Object Field" onchange="{!c.doSomething}">
-				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
-										<option value="{!sObjectField}">{!sObjectField}</option>
-				                	</aura:iteration>
-                                </lightning:select>
+                        <div class="slds-col slds-size_1-of-2">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-1 container">
+                                    <br />
+                                    <lightning:select name="selectItem" label="Destination Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.destinationObj}" >
+    				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
+    										<option value="{!sObjectField}">{!sObjectField}</option>
+    				                	</aura:iteration>
+                                    </lightning:select>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </aura:iteration>
             <div class="slds-size_1-of-1">
                 <br />
                 <center>
-                    <lightning:button class="slds-text-color_inverse convertButton" label="Convert Records"></lightning:button>
+                    <lightning:button class="slds-text-color_inverse convertButton" label="Convert Records" onclick="{!c.convertRecords}" ></lightning:button>
                 </center>
             </div>
         </div>
