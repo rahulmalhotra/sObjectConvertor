@@ -48,13 +48,14 @@
 						component.set('v.destinationSObjectFields', sObjectFieldMap[sObjectName]);			
 					}
 					component.set('v.sObjectFieldMap',sObjectFieldMap);
+					component.refreshMap();		
 				}
 				else {
 					alert('Unable to fetch fields. '+JSON.stringify(response.getError()));
 				}
 			});
 			$A.enqueueAction(getSObjectFieldData);
-		}			
+		}	
 	},
 
 	fetchRecords: function(component, event, helper) {
@@ -94,11 +95,11 @@
 
 	convertRecords: function(component, event, helper) {
 		var recordIdList = component.get('v.recordIdList');
-		var mapping = component.get('v.sObjectFieldMap');
+		var mapping = component.get('v.recordMap');
 		var sourceObj = component.find('sourceSObject').get('v.value');
 		var destinationObj = component.find('destinationSObject').get('v.value');
 		var inputData = {
-			recordIdList: recordList,
+			recordIdList: recordIdList,
 			mapping: mapping,
 			sourceObj: sourceObj,
 			destinationObj: destinationObj

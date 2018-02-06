@@ -5,7 +5,6 @@
 
 	getSObjectFields: function(component, event, helper) {
 		helper.fetchSObjectFields(component, event, helper);
-		component.refreshMap(true);
 	},
 
 	searchFocused: function(component, event, helper) {
@@ -39,10 +38,10 @@
 
 	addRecord: function(component, event, helper) {
 		var recordId = component.find('inputRecordId').get('v.value');
-		var recordList = component.get('v.recordList');
-		if(recordList.indexOf(recordId) == -1 && recordId!=null && recordId!='') {
-			recordList.push(recordId);
-			component.set('v.recordList', recordList);
+		var recordIdList = component.get('v.recordIdList');
+		if(recordIdList.indexOf(recordId) == -1 && recordId!=null && recordId!='') {
+			recordIdList.push(recordId);
+			component.set('v.recordIdList', recordIdList);
 		}
 	},
 
@@ -51,17 +50,41 @@
 	},
 
 	refreshMap: function(component, event, helper) {
-		var params = event.getParam('arguments');
-		var initial = params.initial;
 		var sourceSObject = component.find('sourceSObject').get('v.value');
 		var destinationSObject = component.find('destinationSObject').get('v.value');
+		var recordMap = component.get('v.recordMap');
 		if(sourceSObject!=undefined && destinationSObject!=undefined && sourceSObject!='' && destinationSObject!='') {
-			if(initial) {
-				var recordMap = component.get('v.recordMap');
-				console.log(recordMap);
-			} else {
-
+			if(event.getSource().get('v.name')==undefined) {
+				if(recordMap.length==0) {
+					component.addRow();
+				}
+				else {
+					component.set('v.recordMap',null);
+					component.addRow();
+					// Need to code... empty the mapping
+				}
+			} else {			
+				var eventName = event.getSource().get('v.name');
+				if(eventName=='selectSourceSObject') {
+					// Remove previous value from map and add new value
+				} else if(eventName=='selectDestinationSObject') {
+					// Remove previous value from map and add new value
+				}
 			}
 		}
+	},
+
+	addRow: function(component, event, helper) {
+		var recordMap = component.get('v.recordMap');
+		var sourceSObjectFields = component.get('v.sourceSObjectFields');
+		var destinationSObjectFields = component.get('v.destinationSObjectFields');
+		var element = {
+			sourceObj: sourceSObjectFields[0],
+			destinationObj: destinationSObjectFields[0]
+		};
+		if(recordMap==null)
+			recordMap = [];
+		recordMap.push(element);
+		component.set('v.recordMap', recordMap);		
 	}
 })

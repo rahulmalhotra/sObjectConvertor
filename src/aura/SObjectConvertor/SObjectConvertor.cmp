@@ -1,16 +1,15 @@
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="SObjectConvertorController"  access="global">
 	<aura:handler name="init" action="{!c.getInitialData}" value="{!this}"></aura:handler>
 	<aura:attribute name="sObjectList" type="List"></aura:attribute>
-	<aura:attribute name="sObjectFieldMap" type="List"></aura:attribute>
+	<aura:attribute name="sObjectFieldMap" type="Object"></aura:attribute>
 	<aura:attribute name="sourceSObjectFields" type="List"></aura:attribute>
 	<aura:attribute name="destinationSObjectFields" type="List"></aura:attribute>	
 	<aura:attribute name="searchResults" type="List"></aura:attribute>
     <aura:attribute name="recordIdList" type="List"></aura:attribute>
     <aura:attribute name="recordMap" type="List"></aura:attribute>
-    <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}" ></aura:method>
-    <aura:method name="refreshMap" action="{!c.refreshMap}" >
-        <aura:attribute name="initial" type="Boolean" ></aura:attribute>
-    </aura:method>
+    <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
+    <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
+    <aura:method  name="addRow" action="{!c.addRow}"></aura:method>
     <lightning:card title="My Title">
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_1-of-2 container">
@@ -92,17 +91,11 @@
                             <div class="slds-col slds-size_2-of-12 showFields">
                                 <lightning:button name="showFields" variant="brand" onclick="{!c.addRecord}"  label="Add Record"></lightning:button>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 container">
-                                <lightning:select name="selectItem" label="Select Mapping" onchange="{!c.doSomething}">
-                                    <option value="1">Create a New Mapping</option>
-                                    <option value="2">Choose Existing Mapping</option>
-                                </lightning:select>
-                            </div>
                         </div>
                     </div>
                     <div class="slds-col slds-size_1-of-2 container">
                         <ul>
-                            <aura:iteration items="{!v.recordList}" var="record">
+                            <aura:iteration items="{!v.recordIdList}" var="record">
                                 <li>
                                     <div class="demo-only listStyle">
                                         <div class="slds-text-color_inverse">{!record}</div>
@@ -110,6 +103,15 @@
                                 </li>
                             </aura:iteration>
                         </ul>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 container">
+                        <lightning:select name="selectItem" label="Select Mapping" onchange="{!c.doSomething}">
+                            <option value="1">Create a New Mapping</option>
+                            <option value="2">Choose Existing Mapping</option>
+                        </lightning:select>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 container addRow">
+                        <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}"  label="Add Row"></lightning:button>
                     </div>
                 </div>
             </div>
@@ -120,7 +122,7 @@
                             <div class="slds-grid slds-wrap">
                                 <div class="slds-col slds-size_1-of-1 container">
                                     <br />
-                                    <lightning:select name="selectItem" label="Source Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.sourceObj}" >
+                                    <lightning:select name="selectSourceSObject" label="Source Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.sourceObj}" >
     				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
     										<option value="{!sObjectField}">{!sObjectField}</option>
     				                	</aura:iteration>
@@ -132,7 +134,7 @@
                             <div class="slds-grid slds-wrap">
                                 <div class="slds-col slds-size_1-of-1 container">
                                     <br />
-                                    <lightning:select name="selectItem" label="Destination Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.destinationObj}" >
+                                    <lightning:select name="selectDestinationSObject" label="Destination Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.destinationObj}" >
     				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
     										<option value="{!sObjectField}">{!sObjectField}</option>
     				                	</aura:iteration>

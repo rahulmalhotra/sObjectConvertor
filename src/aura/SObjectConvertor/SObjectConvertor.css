@@ -25,3 +25,6 @@
 .THIS .convertButton {
 	background-color: green;
 }
+.THIS .addRow {
+	margin: 1.5em 0;	
+}
