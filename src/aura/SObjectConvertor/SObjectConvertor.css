@@ -28,3 +28,10 @@
 .THIS .addRow {
 	margin: 1.5em 0;	
 }
+.THIS .center {
+	text-align: center;
+}
+
+.THIS .border {
+	border: 1px solid gray;
+}

@@ -7,6 +7,8 @@
 	<aura:attribute name="searchResults" type="List"></aura:attribute>
     <aura:attribute name="recordIdList" type="List"></aura:attribute>
     <aura:attribute name="recordMap" type="List"></aura:attribute>
+    <aura:attribute name="failureIds" type="List"></aura:attribute>
+    <aura:attribute name="successIds" type="List"></aura:attribute>
     <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
     <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
     <aura:method name="addRow" action="{!c.addRow}"></aura:method>
@@ -145,11 +147,52 @@
                     </div>
                 </div>
             </aura:iteration>
-            <div class="slds-size_1-of-1">
+            <div class="slds-col slds-size_1-of-1">
                 <br />
                 <center>
                     <lightning:button class="slds-text-color_inverse convertButton" label="Convert Records" onclick="{!c.convertRecords}" ></lightning:button>
                 </center>
+                <br />
+            </div>
+            <div class="slds-col slds-size_1-of-2 container">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer border">
+                    <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col" class="center">
+                                <div class="slds-truncate" title="Opportunity Name">Success Ids</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.successIds}" var="successId">
+                            <tr>
+                                <th scope="row" data-label="Opportunity Name" class="center">
+                                    <div class="slds-truncate" title="Cloudhub"><a href="javascript:void(0);">{!successId}</a></div>
+                                </th>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>                
+            </div>
+            <div class="slds-col slds-size_1-of-2 container">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer border">
+                    <thead>
+                        <tr class="slds-text-title_caps">
+                            <th scope="col" class="center">
+                                <div class="slds-truncate" title="Opportunity Name">Failure Ids</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.failureIds}" var="failureId">
+                            <tr>
+                                <th scope="row" data-label="Opportunity Name" class="center">
+                                    <div class="slds-truncate" title="Cloudhub"><a href="javascript:void(0);">{!failureId}</a></div>
+                                </th>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>                
             </div>
         </div>
     </lightning:card>

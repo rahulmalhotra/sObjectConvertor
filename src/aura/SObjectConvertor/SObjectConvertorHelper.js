@@ -118,8 +118,12 @@
 		convertAction.setCallback(this, function(response) {
 			var state = response.getState();
 			if(state==='SUCCESS') {
-				var result = response.getReturnValue();
-				console.log(result);
+				var resultString = response.getReturnValue();
+				var resultObj = JSON.parse(resultString);
+				var failureIds = resultObj.failureIds;
+				var successIds = resultObj.successIds;
+				component.set('v.failureIds', failureIds);
+				component.set('v.successIds', successIds);
 			} else {
 				alert('Error in connecting with server');
 			}
