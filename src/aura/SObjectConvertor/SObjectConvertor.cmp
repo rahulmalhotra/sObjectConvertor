@@ -9,7 +9,7 @@
     <aura:attribute name="recordMap" type="List"></aura:attribute>
     <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
     <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
-    <aura:method  name="addRow" action="{!c.addRow}"></aura:method>
+    <aura:method name="addRow" action="{!c.addRow}"></aura:method>
     <lightning:card title="My Title">
         <div class="slds-grid slds-wrap">
             <div class="slds-col slds-size_1-of-2 container">

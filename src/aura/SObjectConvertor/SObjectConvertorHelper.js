@@ -98,13 +98,32 @@
 		var mapping = component.get('v.recordMap');
 		var sourceObj = component.find('sourceSObject').get('v.value');
 		var destinationObj = component.find('destinationSObject').get('v.value');
+
+		var mapToSend = {};
+		for(var i=0;i<mapping.length;i++) {
+			mapToSend[mapping[i].sourceObj] = mapping[i].destinationObj;
+		}
+
 		var inputData = {
 			recordIdList: recordIdList,
-			mapping: mapping,
+			mapping: mapToSend,
 			sourceObj: sourceObj,
 			destinationObj: destinationObj
 		};
-		console.log(inputData);
 		var inputDataString = JSON.stringify(inputData);
+		var convertAction = component.get('c.createRecords');
+		convertAction.setParams({
+			inputData: inputDataString
+		});
+		convertAction.setCallback(this, function(response) {
+			var state = response.getState();
+			if(state==='SUCCESS') {
+				var result = response.getReturnValue();
+				console.log(result);
+			} else {
+				alert('Error in connecting with server');
+			}
+		});
+		$A.enqueueAction(convertAction);
 	}
 })

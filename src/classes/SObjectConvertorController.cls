@@ -71,8 +71,10 @@ public class SObjectConvertorController {
     @AuraEnabled
     public static String createRecords(String inputData) {
 
+        System.debug(inputData);
     	CreateRecordWrapper recordWrapper = (CreateRecordWrapper) JSON.deserialize(inputData, CreateRecordWrapper.class);
     	String inputFields = '';
+        System.debug(recordWrapper.mapping.keySet());
     	for(String sourceObjField : recordWrapper.mapping.keySet()) {
 			inputFields+=sourceObjField+', ';
     	}
