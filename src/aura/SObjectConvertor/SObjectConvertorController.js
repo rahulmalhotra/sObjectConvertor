@@ -86,5 +86,9 @@
 			recordMap = [];
 		recordMap.push(element);
 		component.set('v.recordMap', recordMap);		
+	},
+
+	removeRecordIdFromList: function(component, event, helper) {
+		// Remove the pill
 	}
 })

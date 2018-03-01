@@ -110,8 +110,8 @@
                                             <a href="javascript:void(0);" class="slds-pill__action" title="Full pill label verbiage mirrored here">
                                                 <span class="slds-pill__label">{!record}</span>
                                             </a>
-                                            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
-                                                <lightning:icon iconName="utility:close" />
+                                            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeRecordIdFromList}" data-record="{!record}" title="Remove">
+                                                <lightning:icon iconName="utility:close"></lightning:icon>
                                             </button>
                                            </span>
 <!--                                         <div class="slds-text-color_inverse">{!record}</div>
