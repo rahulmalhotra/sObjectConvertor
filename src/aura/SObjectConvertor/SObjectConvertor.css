@@ -31,7 +31,11 @@
 .THIS .center {
 	text-align: center;
 }
-
 .THIS .border {
 	border: 1px solid gray;
+}
+.THIS .objectContainerStyle {
+	padding-bottom: 1em;
+	padding-top: 0.5em;
+	background-color: #DFDFDF;
 }

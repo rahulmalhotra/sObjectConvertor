@@ -14,20 +14,26 @@
     <aura:method name="addRow" action="{!c.addRow}"></aura:method>
     <lightning:card title="My Title">
         <div class="slds-grid slds-wrap">
-            <div class="slds-col slds-size_1-of-2 container">
-                <!-- Should use commonInputSelect Later -->
-                <lightning:select aura:id="sourceSObject" name="sourceSObject" label="Select Source Object" onchange="{!c.getSObjectFields}">
-                	<aura:iteration var="sObjectName" items="{!v.sObjectList}">
-						<option value="{!sObjectName}">{!sObjectName}</option>
-                	</aura:iteration>
-                </lightning:select>
-            </div>
-            <div class="slds-col slds-size_1-of-2 container">
-                <lightning:select aura:id="destinationSObject" name="destinationSObject" label="Select Destination Object" onchange="{!c.getSObjectFields}">
-                	<aura:iteration var="sObjectName" items="{!v.sObjectList}">
-						<option value="{!sObjectName}">{!sObjectName}</option>
-                	</aura:iteration>
-                </lightning:select>
+            <div class="slds-col slds-size_1-of-1">
+                <lightning:card title="Select Objects">
+                    <div class="slds-grid slds-wrap objectContainerStyle">
+                        <div class="slds-col slds-size_1-of-2 container">
+                            <!-- Should use commonInputSelect Later -->
+                            <lightning:select aura:id="sourceSObject" name="sourceSObject" label="Select Source Object" onchange="{!c.getSObjectFields}">
+                                <aura:iteration var="sObjectName" items="{!v.sObjectList}">
+                                    <option value="{!sObjectName}">{!sObjectName}</option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 container">
+                            <lightning:select aura:id="destinationSObject" name="destinationSObject" label="Select Destination Object" onchange="{!c.getSObjectFields}">
+                                <aura:iteration var="sObjectName" items="{!v.sObjectList}">
+                                    <option value="{!sObjectName}">{!sObjectName}</option>
+                                </aura:iteration>
+                            </lightning:select>
+                        </div>                
+                    </div>
+                </lightning:card>
             </div>
             <div class="slds-col slds-size_1-of-1">
                 <br />
@@ -98,11 +104,19 @@
                     <div class="slds-col slds-size_1-of-2 container">
                         <ul>
                             <aura:iteration items="{!v.recordIdList}" var="record">
-                                <li>
+<!--                                 <li>
                                     <div class="demo-only listStyle">
-                                        <div class="slds-text-color_inverse">{!record}</div>
-                                    </div>
-                                </li>
+ -->                                       <span class="slds-pill slds-pill_link">
+                                            <a href="javascript:void(0);" class="slds-pill__action" title="Full pill label verbiage mirrored here">
+                                                <span class="slds-pill__label">{!record}</span>
+                                            </a>
+                                            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" title="Remove">
+                                                <lightning:icon iconName="utility:close" />
+                                            </button>
+                                           </span>
+<!--                                         <div class="slds-text-color_inverse">{!record}</div>
+ --><!--                                     </div>
+                                </li> -->
                             </aura:iteration>
                         </ul>
                     </div>
