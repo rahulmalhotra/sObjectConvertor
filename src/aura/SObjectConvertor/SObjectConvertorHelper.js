@@ -121,11 +121,18 @@
 				var resultString = response.getReturnValue();
 				var resultObj = JSON.parse(resultString);
 				if(resultObj.status=='success') {
-					var resultIdObj = JSON.parse(resultObj.idMap);
-					var failureIds = resultIdObj.failureIds;
-					var successIds = resultIdObj.successIds;
-					component.set('v.failureIds', failureIds);
-					component.set('v.successIds', successIds);					
+					var successMap = JSON.parse(resultObj.successMap);
+					var failureMap = JSON.parse(resultObj.failureMap);
+					var failureMapList = [];
+					for(var key in failureMap) {
+						failureMapList.push({ value: failureMap[key], key: key });
+					}
+					var successMapList = [];
+					for(var key in successMap) {
+						successMapList.push({ value: successMap[key], key: key });
+					}
+					component.set('v.failureMap', failureMapList);
+					component.set('v.successMap', successMapList);					
 				} else if(resultObj.status=='exception') {
 					alert(resultObj.message);
 				}

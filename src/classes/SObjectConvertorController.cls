@@ -75,7 +75,6 @@ public class SObjectConvertorController {
         try {
         	CreateRecordWrapper recordWrapper = (CreateRecordWrapper) JSON.deserialize(inputData, CreateRecordWrapper.class);
         	String inputFields = '';
-            System.debug(recordWrapper.mapping.keySet());
         	for(String sourceObjField : recordWrapper.mapping.keySet()) {
     			inputFields+=sourceObjField+', ';
         	}
@@ -93,22 +92,27 @@ public class SObjectConvertorController {
                 }
                 destinationObjList.add(destinationObj);
             }
-            List<Id> saveResultSuccessIds = new List<Id>();
-            List<Id> saveResultFailureIds = new List<Id>();
-    		List<Database.SaveResult> saveResultList = Database.insert(destinationObjList);
-            Map<String, List<Id>> resultIdMap = new Map<String,List<Id>>();
+            Map<Id, Id> successMap = new Map<Id,Id>();
+            Map<Id, String> failureMap = new Map<Id, String>();
+    		List<Database.SaveResult> saveResultList = Database.insert(destinationObjList, false);
+            Integer i=0;
             for(Database.SaveResult saveResult : saveResultList) {
                 if(saveResult.isSuccess()) {
-                    saveResultSuccessIds.add(saveResult.getId());
+                    successMap.put(recordIdsForQuery.get(i), saveResult.getId());
                 }
                 else {
-                    saveResultFailureIds.add(saveResult.getId());
+                    String error = '';
+                    for(Database.Error err : saveResult.getErrors()) {
+                        error = error + err.getMessage();
+                    }
+                    failureMap.put(recordIdsForQuery.get(i), error);
                 }
+                i++;
             }
-            resultIdMap.put('successIds', saveResultSuccessIds);
-            resultIdMap.put('failureIds', saveResultFailureIds);
+
+            resultMap.put('successMap', JSON.serialize(successMap));
+            resultMap.put('failureMap', JSON.serialize(failureMap));
             resultMap.put('status', 'success');
-        	resultMap.put('idMap', JSON.serialize(resultIdMap));
             return JSON.serialize(resultMap); 
 
         } catch(Exception e) {
