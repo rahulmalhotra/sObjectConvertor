@@ -120,10 +120,15 @@
 			if(state==='SUCCESS') {
 				var resultString = response.getReturnValue();
 				var resultObj = JSON.parse(resultString);
-				var failureIds = resultObj.failureIds;
-				var successIds = resultObj.successIds;
-				component.set('v.failureIds', failureIds);
-				component.set('v.successIds', successIds);
+				if(resultObj.status=='success') {
+					var resultIdObj = JSON.parse(resultObj.idMap);
+					var failureIds = resultIdObj.failureIds;
+					var successIds = resultIdObj.successIds;
+					component.set('v.failureIds', failureIds);
+					component.set('v.successIds', successIds);					
+				} else if(resultObj.status=='exception') {
+					alert(resultObj.message);
+				}
 			} else {
 				alert('Error in connecting with server');
 			}

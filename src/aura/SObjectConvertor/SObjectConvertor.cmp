@@ -12,11 +12,11 @@
     <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
     <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
     <aura:method name="addRow" action="{!c.addRow}"></aura:method>
-    <lightning:card title="My Title">
-        <div class="slds-grid slds-wrap">
+    <lightning:card title="SObject Convertor">
+        <div class="slds-grid slds-wrap" style="border-top: 1px solid lightgray;">
             <div class="slds-col slds-size_1-of-1">
                 <lightning:card title="Select Objects">
-                    <div class="slds-grid slds-wrap objectContainerStyle">
+                     <div class="slds-grid slds-wrap">
                         <div class="slds-col slds-size_1-of-2 container">
                             <!-- Should use commonInputSelect Later -->
                             <lightning:select aura:id="sourceSObject" name="sourceSObject" label="Select Source Object" onchange="{!c.getSObjectFields}">
@@ -35,14 +35,14 @@
                     </div>
                 </lightning:card>
             </div>
-            <div class="slds-col slds-size_1-of-1">
+            <div class="slds-col slds-size_1-of-1 block">
                 <br />
                 <div class="slds-grid slds-wrap">
-                    <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-col slds-size_1-of-1">
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_4-of-12 container">
                                 <!-- Lookup Starts -->
-                                <div style="height: 10rem;">
+                                <div>
                                     <div class="slds-form-element">
                                         <div class="slds-form-element__control">
                                             <div class="slds-combobox_container">
@@ -90,54 +90,45 @@
                                 </div>
                                 <!-- Lookup End -->
                             </div>
-                            <div class="or slds-size_2-of-12">
+                            <div class="or slds-size_1-of-12">
                                 or
                             </div>
                             <div class="slds-col slds-size_4-of-12 container">
                                 <lightning:Input aura:id="inputRecordId" label="Enter Record Id" name="searchObject"></lightning:Input>
                             </div>
-                            <div class="slds-col slds-size_2-of-12 showFields">
+                            <div class="slds-col slds-size_3-of-12 container showFields">
                                 <lightning:button name="showFields" variant="brand" onclick="{!c.addRecord}"  label="Add Record"></lightning:button>
                             </div>
                         </div>
                     </div>
-                    <div class="slds-col slds-size_1-of-2 container">
+                    <div class="slds-col slds-size_1-of-1 container">
                         <ul>
                             <aura:iteration items="{!v.recordIdList}" var="record">
-<!--                                 <li>
-                                    <div class="demo-only listStyle">
- -->                                       <span class="slds-pill slds-pill_link">
-                                            <a href="javascript:void(0);" class="slds-pill__action" title="Full pill label verbiage mirrored here">
-                                                <span class="slds-pill__label">{!record}</span>
-                                            </a>
-                                            <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" onclick="{!c.removeRecordIdFromList}" data-record="{!record}" title="Remove">
-                                                <lightning:icon iconName="utility:close"></lightning:icon>
-                                            </button>
-                                           </span>
-<!--                                         <div class="slds-text-color_inverse">{!record}</div>
- --><!--                                     </div>
-                                </li> -->
+                                <lightning:pill label="{!record}" onremove="{!c.removeRecordIdFromList}" />
                             </aura:iteration>
                         </ul>
                     </div>
-                    <div class="slds-col slds-size_1-of-2 container">
-                        <lightning:select name="selectItem" label="Select Mapping" onchange="{!c.doSomething}">
-                            <option value="1">Create a New Mapping</option>
-                            <option value="2">Choose Existing Mapping</option>
-                        </lightning:select>
-                    </div>
-                    <div class="slds-col slds-size_1-of-2 container addRow">
-                        <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}"  label="Add Row"></lightning:button>
-                    </div>
                 </div>
             </div>
+            <div class="slds-col slds-size_1-of-1 block">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-2 container">
+                    <lightning:select name="selectItem" label="Select Mapping" onchange="{!c.doSomething}">
+                        <option value="1">Create a New Mapping</option>
+                        <option value="2">Choose Existing Mapping</option>
+                    </lightning:select>
+                </div>
+                <div class="slds-col slds-size_1-of-2 container addRow">
+                    <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}"  label="Add Row"></lightning:button>
+                </div>
+            </div>
+            </div>
             <aura:iteration var="fieldMap" items="{!v.recordMap}">
-                <div class="slds-col slds-size_1-of-1">
+                <div class="slds-col slds-size_1-of-1 block">
                     <div class="slds-grid slds-wrap">
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-grid slds-wrap">
                                 <div class="slds-col slds-size_1-of-1 container">
-                                    <br />
                                     <lightning:select name="selectSourceSObject" label="Source Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.sourceObj}" >
     				                	<aura:iteration var="sObjectField" items="{!v.sourceSObjectFields}">
     										<option value="{!sObjectField}">{!sObjectField}</option>
@@ -149,7 +140,6 @@
                         <div class="slds-col slds-size_1-of-2">
                             <div class="slds-grid slds-wrap">
                                 <div class="slds-col slds-size_1-of-1 container">
-                                    <br />
                                     <lightning:select name="selectDestinationSObject" label="Destination Object Field" onchange="{!c.refreshMap}" value="{!fieldMap.destinationObj}" >
     				                	<aura:iteration var="sObjectField" items="{!v.destinationSObjectFields}">
     										<option value="{!sObjectField}">{!sObjectField}</option>
@@ -161,13 +151,13 @@
                     </div>
                 </div>
             </aura:iteration>
-            <div class="slds-col slds-size_1-of-1">
-                <br />
+            <div class="slds-col slds-size_1-of-1 block">
                 <center>
                     <lightning:button class="slds-text-color_inverse convertButton" label="Convert Records" onclick="{!c.convertRecords}" ></lightning:button>
                 </center>
-                <br />
             </div>
+            <div class="slds-col slds-size_1-of-1 block">
+            <div class="slds-grid slds-wrap">                
             <div class="slds-col slds-size_1-of-2 container">
                 <table class="slds-table slds-table_bordered slds-table_cell-buffer border">
                     <thead>
@@ -181,7 +171,7 @@
                         <aura:iteration items="{!v.successIds}" var="successId">
                             <tr>
                                 <th scope="row" data-label="Opportunity Name" class="center">
-                                    <div class="slds-truncate" title="Cloudhub"><a href="javascript:void(0);">{!successId}</a></div>
+                                    <div class="slds-truncate" title="Cloudhub"><a href="{!'/'+successId}">{!successId}</a></div>
                                 </th>
                             </tr>
                         </aura:iteration>
@@ -207,6 +197,8 @@
                         </aura:iteration>
                     </tbody>
                 </table>                
+            </div>
+        </div>
             </div>
         </div>
     </lightning:card>

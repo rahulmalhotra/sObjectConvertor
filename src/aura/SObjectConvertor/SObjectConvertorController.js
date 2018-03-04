@@ -22,11 +22,13 @@
 
 	searchBlurred: function(component, event, helper) {
 		var searchText = component.find('searchRecord').get('v.value');
-		if(searchText.length==0) {
-			var searchCombobox = component.find('searchCombobox');
-			$A.util.addClass(searchCombobox, 'slds-combobox-lookup');
-			$A.util.removeClass(searchCombobox, 'slds-is-open');			
-		}		
+		if(searchText!=undefined) {
+			if(searchText.length==0) {
+				var searchCombobox = component.find('searchCombobox');
+				$A.util.addClass(searchCombobox, 'slds-combobox-lookup');
+				$A.util.removeClass(searchCombobox, 'slds-is-open');			
+			}					
+		}
 	},
 
 	setSearchValue: function(component, event, helper) {
@@ -89,6 +91,14 @@
 	},
 
 	removeRecordIdFromList: function(component, event, helper) {
-		// Remove the pill
+		var id = event.getSource().get('v.label');
+		var ids = component.get('v.recordIdList');
+		var newIds = [];
+		for(var i=0;i<ids.length;i++) {
+			if(ids[i]!=id) {
+				newIds.push(ids[i]);
+			}
+		}
+		component.set('v.recordIdList', newIds);
 	}
 })

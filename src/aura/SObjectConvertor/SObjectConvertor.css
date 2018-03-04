@@ -26,7 +26,7 @@
 	background-color: green;
 }
 .THIS .addRow {
-	margin: 1.5em 0;	
+	margin: 1.5em 0em;	
 }
 .THIS .center {
 	text-align: center;
@@ -34,8 +34,10 @@
 .THIS .border {
 	border: 1px solid gray;
 }
-.THIS .objectContainerStyle {
+.THIS .block {
+	padding-top: 1em;
 	padding-bottom: 1em;
-	padding-top: 0.5em;
-	background-color: #DFDFDF;
+	background: white;
+	border-radius: 1;
+	border-top: 1px solid lightgray;
 }

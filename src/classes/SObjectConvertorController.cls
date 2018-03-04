@@ -71,43 +71,50 @@ public class SObjectConvertorController {
     @AuraEnabled
     public static String createRecords(String inputData) {
 
-        System.debug(inputData);
-    	CreateRecordWrapper recordWrapper = (CreateRecordWrapper) JSON.deserialize(inputData, CreateRecordWrapper.class);
-    	String inputFields = '';
-        System.debug(recordWrapper.mapping.keySet());
-    	for(String sourceObjField : recordWrapper.mapping.keySet()) {
-			inputFields+=sourceObjField+', ';
-    	}
-    	inputFields = inputFields.substring(0, inputFields.length()-2);
-    	List<Id> recordIdsForQuery = recordWrapper.recordIdList;
-    	String recordsQuery = 'SELECT '+inputFields+' FROM '+recordWrapper.sourceObj+' WHERE Id in :recordIdsForQuery';
-    	Map<Id,sObject> sourceObjMap = new Map<Id,sObject>(Database.query(recordsQuery));
-    	System.debug(sourceObjMap);
-        List<sObject> destinationObjList = new List<sObject>();
-        for(Id recordId:recordIdsForQuery) {
-            sObject sourceObj = sourceObjMap.get(recordId);
-            sObject destinationObj = Schema.getGlobalDescribe().get(recordWrapper.destinationObj).newSObject();
-            for(String sourceObjField : recordWrapper.mapping.keySet()) {
-                String destinationObjField = recordWrapper.mapping.get(sourceObjField);
-                destinationObj.put(destinationObjField,sourceObj.get(sourceObjField));
+        Map<String, String> resultMap = new Map<String, String>();
+        try {
+        	CreateRecordWrapper recordWrapper = (CreateRecordWrapper) JSON.deserialize(inputData, CreateRecordWrapper.class);
+        	String inputFields = '';
+            System.debug(recordWrapper.mapping.keySet());
+        	for(String sourceObjField : recordWrapper.mapping.keySet()) {
+    			inputFields+=sourceObjField+', ';
+        	}
+        	inputFields = inputFields.substring(0, inputFields.length()-2);
+        	List<Id> recordIdsForQuery = recordWrapper.recordIdList;
+        	String recordsQuery = 'SELECT '+inputFields+' FROM '+recordWrapper.sourceObj+' WHERE Id in :recordIdsForQuery';
+        	Map<Id,sObject> sourceObjMap = new Map<Id,sObject>(Database.query(recordsQuery));
+            List<sObject> destinationObjList = new List<sObject>();
+            for(Id recordId:recordIdsForQuery) {
+                sObject sourceObj = sourceObjMap.get(recordId);
+                sObject destinationObj = Schema.getGlobalDescribe().get(recordWrapper.destinationObj).newSObject();
+                for(String sourceObjField : recordWrapper.mapping.keySet()) {
+                    String destinationObjField = recordWrapper.mapping.get(sourceObjField);
+                    destinationObj.put(destinationObjField,sourceObj.get(sourceObjField));
+                }
+                destinationObjList.add(destinationObj);
             }
-            destinationObjList.add(destinationObj);
+            List<Id> saveResultSuccessIds = new List<Id>();
+            List<Id> saveResultFailureIds = new List<Id>();
+    		List<Database.SaveResult> saveResultList = Database.insert(destinationObjList);
+            Map<String, List<Id>> resultIdMap = new Map<String,List<Id>>();
+            for(Database.SaveResult saveResult : saveResultList) {
+                if(saveResult.isSuccess()) {
+                    saveResultSuccessIds.add(saveResult.getId());
+                }
+                else {
+                    saveResultFailureIds.add(saveResult.getId());
+                }
+            }
+            resultIdMap.put('successIds', saveResultSuccessIds);
+            resultIdMap.put('failureIds', saveResultFailureIds);
+            resultMap.put('status', 'success');
+        	resultMap.put('idMap', JSON.serialize(resultIdMap));
+            return JSON.serialize(resultMap); 
+
+        } catch(Exception e) {
+            resultMap.put('status', 'exception');
+            resultMap.put('message', e.getMessage());
+            return JSON.serialize(resultMap); 
         }
-        System.debug(destinationObjList);
-        List<Id> saveResultSuccessIds = new List<Id>();
-        List<Id> saveResultFailureIds = new List<Id>();
-		List<Database.SaveResult> saveResultList = Database.insert(destinationObjList);
-        Map<String,List<Id>> resultMap = new Map<String,List<Id>>();
-        for(Database.SaveResult saveResult : saveResultList) {
-            if(saveResult.isSuccess()) {
-                saveResultSuccessIds.add(saveResult.getId());
-            }
-            else {
-                saveResultFailureIds.add(saveResult.getId());
-            }
-        }
-        resultMap.put('successIds', saveResultSuccessIds);
-        resultMap.put('failureIds', saveResultFailureIds);
-    	return JSON.serialize(resultMap);
     }
 }
