@@ -22,9 +22,6 @@
 	border-bottom: 1px solid white;
 	background: rgb(22, 50, 92);
 }
-.THIS .convertButton {
-	background-color: green;
-}
 .THIS .addRow {
 	margin: 1.5em 0em;	
 }
@@ -40,4 +37,7 @@
 	background: white;
 	border-radius: 1;
 	border-top: 1px solid lightgray;
+}
+.THIS .successButton {
+	background: green;
 }

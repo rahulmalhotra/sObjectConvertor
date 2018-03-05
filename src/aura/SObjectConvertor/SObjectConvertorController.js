@@ -100,5 +100,24 @@
 			}
 		}
 		component.set('v.recordIdList', newIds);
-	}
+	},
+
+	saveMapping: function(component, event, helper) {
+        var modal = component.find("sobjectMappingModal");
+        var modalBackdrop = component.find("sobjectModalBackdrop");
+        $A.util.addClass(modal,"slds-fade-in-open");
+        $A.util.addClass(modalBackdrop,"slds-backdrop_open");		
+	},
+
+    // Function used to close the SObject Mapping modal
+    closeModal: function(component, event, helper) {
+        var modal = component.find("sobjectMappingModal");
+        var modalBackdrop = component.find("sobjectModalBackdrop");
+        $A.util.removeClass(modal,"slds-fade-in-open");
+        $A.util.removeClass(modalBackdrop,"slds-backdrop_open");
+    },
+
+    createMapping: function(component, event, helper) {
+    	alert('create mapping');
+    }
 })

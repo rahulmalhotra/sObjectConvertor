@@ -109,7 +109,8 @@
                         </lightning:select>
                     </div>
                     <div class="slds-col slds-size_1-of-2 container addRow">
-                        <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}" label="Add Row"></lightning:button>
+                        <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}" label="Add Row"></lightning:button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <lightning:button class="slds-text-color_inverse successButton" name="saveMapping" variant="success" onclick="{!c.saveMapping}" label="Save Mapping"></lightning:button>
                     </div>
                 </div>
             </div>
@@ -143,7 +144,7 @@
             </aura:iteration>
             <div class="slds-col slds-size_1-of-1 block">
                 <center>
-                    <lightning:button class="slds-text-color_inverse convertButton" label="Convert Records" onclick="{!c.convertRecords}"></lightning:button>
+                    <lightning:button class="slds-text-color_inverse successButton" label="Convert Records" variant="success" onclick="{!c.convertRecords}"></lightning:button>
                 </center>
             </div>
             <div class="slds-col slds-size_1-of-1 block">
@@ -192,4 +193,28 @@
             </div>
         </div>
     </lightning:card>
+    <div>
+        <section aura:id="sobjectMappingModal" role="dialog" tabindex="-1" aria-labelledby="contactModalHeading" aria-modal="true" aria-describedby="contactModalBody" class="slds-modal">
+            <!-- Modal Container -->
+            <div class="slds-modal__container">
+                <!-- Modal Header ( consists of close button and heading of modal ) -->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon class="slds-modal__close" alternativeText="Close" iconName="utility:close" onclick="{!c.closeModal}" variant="bare-inverse" size="large"></lightning:buttonIcon>
+                    <h2 id="contactModalHeading" class="slds-text-heading_medium slds-hyphenate">SObject Mapping</h2>
+                </header>
+                <!-- Modal Body ( consists of form ) -->
+                <div class="slds-modal__content slds-p-around_medium" id="contactModalBody">
+                    <!-- Validation added -->
+                    <lightning:input aura:id="formFieldToValidate" label="SObject Mapping Name" messageWhenValueMissing="SObject Mapping Name is Mandatory" required="true" value="{!v.contact.FirstName}" />
+                </div>
+                <!-- Modal Footer ( consists of cancel and save buttons ) -->
+                <footer class="slds-modal__footer">
+                    <lightning:button onclick="{!c.closeModal}" variant="neutral">Cancel</lightning:button>
+                    <lightning:button onclick="{!c.createMapping}" variant="brand" >Save</lightning:button>
+                </footer>
+            </div>
+        </section>
+        <!-- Modal Backdrop -->
+        <div aura:id="sobjectModalBackdrop" class="slds-backdrop"></div>
+    </div>    
 </aura:component>
