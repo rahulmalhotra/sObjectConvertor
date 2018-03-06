@@ -41,3 +41,6 @@
 .THIS .successButton {
 	background: green;
 }
+.THIS .hidden {
+	display: none;
+}

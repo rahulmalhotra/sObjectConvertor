@@ -1,7 +1,7 @@
 ({
 	getInitialData: function(component, event, helper) {
 		helper.fetchSObjects(component, event, helper);
-		helper.getSObjectMapping(component, event, helper);
+		helper.getSObjectMappingNames(component, event, helper);
 	},
 
 	getSObjectFields: function(component, event, helper) {
@@ -82,8 +82,8 @@
 		var sourceSObjectFields = component.get('v.sourceSObjectFields');
 		var destinationSObjectFields = component.get('v.destinationSObjectFields');
 		var element = {
-			sourceObj: sourceSObjectFields[0],
-			destinationObj: destinationSObjectFields[0]
+			rmak__Source_Sobject_Field__c: sourceSObjectFields[0],
+			rmak__Destination_SObject_Field__c: destinationSObjectFields[0]
 		};
 		if(recordMap==null)
 			recordMap = [];
@@ -120,5 +120,14 @@
 
     createMapping: function(component, event, helper) {
 		helper.createNewMapping(component, event, helper);
+    },
+
+    selectMappingType: function(component, event, helper) {
+    	var selectMappingDropdown = component.find('selectMappingDropdown');
+    	$A.util.toggleClass(selectMappingDropdown, 'hidden');
+    },
+
+    getSObjectMapping: function(component, event, helper) {
+    	helper.getSObjectMapping(component, event, helper);
     }
 })

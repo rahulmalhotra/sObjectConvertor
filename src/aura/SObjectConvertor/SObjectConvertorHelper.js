@@ -101,7 +101,7 @@
 
 		var mapToSend = {};
 		for(var i=0;i<mapping.length;i++) {
-			mapToSend[mapping[i].sourceObj] = mapping[i].destinationObj;
+			mapToSend[mapping[i].rmak__Source_Sobject_Field__c] = mapping[i].rmak__Destination_SObject_Field__c;
 		}
 
 		var inputData = {
@@ -148,19 +148,13 @@
     	if(field.get('v.validity').valid) {
     		var sobjectMappingName = field.get('v.value');
 	    	var recordMap = component.get('v.recordMap');
-	    	var sObjectMapping = [];
-	    	var record = {};
 	    	for(var i=0;i<recordMap.length;i++) {
-	    		record.name = sobjectMappingName+' Record '+i;
-	    		record.rmak__SObject_Mapping_Name__c = sobjectMappingName;
-	    		record.rmak__Source_Sobject_Field__c = recordMap[i].sourceObj;
-	    		record.rmak__Destination_SObject_Field__c = recordMap[i].destinationObj;
-	    		sObjectMapping.push(record);
-	    		record={};
+	    		recordMap[i].name = sobjectMappingName.substring(0,25) +' Record '+ i;
+	    		recordMap[i].rmak__SObject_Mapping_Name__c = sobjectMappingName;
 	    	}
 	    	var createMappingAction = component.get('c.createSObjectMapping');
 	    	createMappingAction.setParams({
-	    		sObjectMappingString: JSON.stringify(sObjectMapping)
+	    		sObjectMappingString: JSON.stringify(recordMap)
 	    	});
 	    	createMappingAction.setCallback(this, function(response) {
 	    		var state = response.getState();
@@ -181,15 +175,17 @@
 	    }
 	},
 
-	getSObjectMapping: function(component, event, helper) {
-		var getMappingAction = component.get('c.fetchSObjectMapping');
+	getSObjectMappingNames: function(component, event, helper) {
+		var getMappingAction = component.get('c.fetchSObjectMappingNames');
 		getMappingAction.setCallback(this, function(response) {
 			var state = response.getState();
 			if(state === 'SUCCESS') {
 				var resultMapString = response.getReturnValue();
 				var resultMap = JSON.parse(resultMapString);
 				if(resultMap.success == '1') {
-					// Set Attribute
+					var sObjectMapNames = JSON.parse(resultMap.message);
+					sObjectMapNames.unshift('none');
+					component.set('v.sObjectMapNames', sObjectMapNames);
 				} else if(resultMap.success == '0') {
 					alert(resultMap.message);
 				}
@@ -198,5 +194,30 @@
 			}
 		});
 		$A.enqueueAction(getMappingAction);
+	},
+
+	getSObjectMapping: function(component, event, helper) {
+		var sObjectMappingName = event.getSource().get('v.value');
+		if(sObjectMappingName!='none') {
+			var getMappingAction = component.get('c.fetchSObjectMapping');
+			getMappingAction.setParams({
+				'sObjectMappingName': sObjectMappingName
+			});
+			getMappingAction.setCallback(this, function(response) {
+				var state = response.getState();
+				if(state === 'SUCCESS') {
+					var resultMapString = response.getReturnValue();
+					var resultMap = JSON.parse(resultMapString);
+					if(resultMap.success == '1') {
+						component.set('v.recordMap', JSON.parse(resultMap.message));
+					} else if(resultMap.success == '0') {
+						alert(resultMap.message);
+					}
+				} else {
+					alert('Error in connecting with server');	    							
+				}
+			});
+			$A.enqueueAction(getMappingAction);			
+		}
 	}
 })
