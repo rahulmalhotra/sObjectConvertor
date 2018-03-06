@@ -1,6 +1,7 @@
 ({
 	getInitialData: function(component, event, helper) {
 		helper.fetchSObjects(component, event, helper);
+		helper.getSObjectMapping(component, event, helper);
 	},
 
 	getSObjectFields: function(component, event, helper) {
@@ -118,22 +119,6 @@
     },
 
     createMapping: function(component, event, helper) {
-    	var field = component.find('sobjectMappingName');
-    	if(field.get('v.validity').valid) {
-    		var sobjectMappingName = field.get('v.value');
-    		console.log(sobjectMappingName);
-	    	var recordMap = component.get('v.recordMap');
-	    	var sObjectMapping = [];
-	    	var record = {};
-	    	for(var i=0;i<recordMap.length;i++) {
-	    		record.name = sobjectMappingName;
-	    		record.rmak__Source_Sobject_Field__c = recordMap[i].sourceObj;
-	    		record.rmak__Destination_SObject_Field__c = recordMap[i].destinationObj;
-	    		sObjectMapping.push(record);
-	    		record = {};
-	    	}
-	    	console.log(sObjectMapping);
-	    	// This mapping should be sent to apex controller
-    	}
+		helper.createNewMapping(component, event, helper);
     }
 })

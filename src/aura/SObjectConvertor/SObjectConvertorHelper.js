@@ -141,5 +141,62 @@
 			}
 		});
 		$A.enqueueAction(convertAction);
+	},
+
+	createNewMapping: function(component, event, helper) {
+    	var field = component.find('sobjectMappingName');
+    	if(field.get('v.validity').valid) {
+    		var sobjectMappingName = field.get('v.value');
+	    	var recordMap = component.get('v.recordMap');
+	    	var sObjectMapping = [];
+	    	var record = {};
+	    	for(var i=0;i<recordMap.length;i++) {
+	    		record.name = sobjectMappingName+' Record '+i;
+	    		record.rmak__SObject_Mapping_Name__c = sobjectMappingName;
+	    		record.rmak__Source_Sobject_Field__c = recordMap[i].sourceObj;
+	    		record.rmak__Destination_SObject_Field__c = recordMap[i].destinationObj;
+	    		sObjectMapping.push(record);
+	    		record={};
+	    	}
+	    	var createMappingAction = component.get('c.createSObjectMapping');
+	    	createMappingAction.setParams({
+	    		sObjectMappingString: JSON.stringify(sObjectMapping)
+	    	});
+	    	createMappingAction.setCallback(this, function(response) {
+	    		var state = response.getState();
+	    		if(state === 'SUCCESS') {
+	    			var resultMapString = response.getReturnValue();
+	    			var resultMap = JSON.parse(resultMapString);
+	    			if(resultMap.success == 1) {
+	    				component.closeModal();
+	    				alert(resultMap.message);
+	    			} else if(resultMap.success == 0) {
+	    				alert(resultMap.message);
+	    			}
+	    		} else {
+					alert('Error in connecting with server');	    			
+	    		}
+	    	});
+	    	$A.enqueueAction(createMappingAction);
+	    }
+	},
+
+	getSObjectMapping: function(component, event, helper) {
+		var getMappingAction = component.get('c.fetchSObjectMapping');
+		getMappingAction.setCallback(this, function(response) {
+			var state = response.getState();
+			if(state === 'SUCCESS') {
+				var resultMapString = response.getReturnValue();
+				var resultMap = JSON.parse(resultMapString);
+				if(resultMap.success == '1') {
+					// Set Attribute
+				} else if(resultMap.success == '0') {
+					alert(resultMap.message);
+				}
+			} else {
+				alert('Error in connecting with server');	    							
+			}
+		});
+		$A.enqueueAction(getMappingAction);
 	}
 })
