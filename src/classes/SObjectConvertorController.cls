@@ -149,22 +149,6 @@ public class SObjectConvertorController {
             }
             resultMap.put('success', '1');
             resultMap.put('message', JSON.serialize(sObjectMappingNamesList));
-            //List<rmak__SObjectConvertorMapping__c> sObjectMappingList = [SELECT rmak__SObject_Mapping_Name__c, rmak__Source_Sobject_Field__c, rmak__Destination_SObject_Field__c FROM rmak__SObjectConvertorMapping__c ];
-            //Map<String, List<rmak__SObjectConvertorMapping__c>> sObjectMappingListMap = new Map<String, List<rmak__SObjectConvertorMapping__c>>();
-            //Set<String> mappingNameSet = new Set<String>();
-            //for(rmak__SObjectConvertorMapping__c obj: sObjectMappingList) {
-            //    if(mappingNameSet.add(obj.rmak__SObject_Mapping_Name__c)) {
-            //        List<rmak__SObjectConvertorMapping__c> mappingList = new List<rmak__SObjectConvertorMapping__c>();
-            //        mappingList.add(obj);
-            //        sObjectMappingListMap.put(obj.rmak__SObject_Mapping_Name__c, mappingList);
-            //    } else {
-            //        List<rmak__SObjectConvertorMapping__c> mappingList = sObjectMappingListMap.get(obj.rmak__SObject_Mapping_Name__c);
-            //        mappingList.add(obj);
-            //        sObjectMappingListMap.put(obj.rmak__SObject_Mapping_Name__c, mappingList);
-            //    }
-            //}
-            //resultMap.put('success', '1');
-            //resultMap.put('message', JSON.serialize(sObjectMappingListMap));
         } catch(Exception e) {
             resultMap.put('success', '0');
             resultMap.put('message', e.getMessage());
