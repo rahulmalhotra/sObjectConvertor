@@ -1,28 +1,43 @@
+<!-- Lightning Component -->
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="SObjectConvertorController" access="global">
+    <!-- Handler to run getInitialData function when the component is loaded -->
     <aura:handler name="init" action="{!c.getInitialData}" value="{!this}"></aura:handler>
+    <!-- Aura attributes section begin -->
+    <!-- List to store names of sObjects present in the org -->
     <aura:attribute name="sObjectList" type="List"></aura:attribute>
+    <!-- sObject Field Map to store each sObject and it's related fields in a map -->
     <aura:attribute name="sObjectFieldMap" type="Object"></aura:attribute>
+    <!-- Source sObject Fields List to show in a dropdown -->
     <aura:attribute name="sourceSObjectFields" type="List"></aura:attribute>
+    <!-- Destination sObject Fields List to show in a dropdown -->
     <aura:attribute name="destinationSObjectFields" type="List"></aura:attribute>
+    <!-- Search results list shown when we search for a record in search textbox -->
     <aura:attribute name="searchResults" type="List"></aura:attribute>
+    <!-- Record id list consisting of all the record ids to be converted -->
     <aura:attribute name="recordIdList" type="List"></aura:attribute>
+    <!-- List of different sObject Mapping available in custom settings -->
     <aura:attribute name="sObjectMapNames" type="List"></aura:attribute>
+    <!-- Actual map of fields selected from an existing mapping or by creating a new mapping -->
     <aura:attribute name="recordMap" type="List"></aura:attribute>
+    <!-- List of records that failed to convert consisting of source sObject record id and error messages -->
     <aura:attribute name="failureMap" type="List"></aura:attribute>
+    <!-- List of records that consists of source and destination sObject record ids -->
     <aura:attribute name="successMap" type="List"></aura:attribute>
-    <!-- Methods Section Starts -->
+    <!-- Aura attribute section end -->
+    <!-- Aura Methods Section Starts -->
     <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
     <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
     <aura:method name="addRow" action="{!c.addRow}"></aura:method>
     <aura:method name="closeModal" action="{!c.closeModal}"></aura:method>
-    <!-- Method Section Ends -->
+    <!-- Aura Method Section Ends -->
+    <!-- Container Card Section Begin -->
     <lightning:card title="SObject Convertor">
         <div class="slds-grid slds-wrap" style="border-top: 1px solid lightgray;">
+            <!-- This section consists of source and destination sObject dropdowns -->
             <div class="slds-col slds-size_1-of-1">
                 <lightning:card title="Select Objects">
                     <div class="slds-grid slds-wrap">
                         <div class="slds-col slds-size_1-of-2 container">
-                            <!-- Should use commonInputSelect Later -->
                             <lightning:select aura:id="sourceSObject" name="sourceSObject" label="Select Source Object" onchange="{!c.getSObjectFields}">
                                 <aura:iteration var="sObjectName" items="{!v.sObjectList}">
                                     <option value="{!sObjectName}">{!sObjectName}</option>
@@ -39,6 +54,11 @@
                     </div>
                 </lightning:card>
             </div>
+            <!-- 
+                This section consists of the search text box using which you can search
+                records in Source sObject by typing. It also consists of the Add record button
+                and the selected record ids that are shown in pills
+            -->
             <div class="slds-col slds-size_1-of-1 block">
                 <br />
                 <div class="slds-grid slds-wrap">
@@ -104,10 +124,15 @@
                     </div>
                 </div>
             </div>
+            <!-- 
+                This section consists of dropdown to select mapping type and
+                another dropdown showing the existing stored mapping which will show/hide depending
+                on the option selected in mapping type
+            -->
             <div class="slds-col slds-size_1-of-1 block">
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2 container">
-                        <lightning:select name="selectMappingType" label="Mapping Type" onchange="{!c.selectMappingType}">
+                        <lightning:select name="selectMappingType" label="Mapping Type" onchange="{!c.toggleSelectMapping}">
                             <option value="1">Create a New Mapping</option>
                             <option value="2">Choose Existing Mapping</option>
                         </lightning:select>
@@ -129,6 +154,9 @@
                     </div>
                 </div>
             </div>
+            <!-- 
+                This section consists of 1-1 mapping of fields from source sObject to destination sObject
+            -->
             <aura:iteration var="fieldMap" items="{!v.recordMap}">
                 <div class="slds-col slds-size_1-of-1 block">
                     <div class="slds-grid slds-wrap">
@@ -157,11 +185,18 @@
                     </div>
                 </div>
             </aura:iteration>
+            <!-- 
+                This section simply consists of convert record button which is responsible for converting the records from source to destination sObject
+            -->
             <div class="slds-col slds-size_1-of-1 block">
                 <center>
                     <lightning:button class="slds-text-color_inverse successButton" label="Convert Records" variant="success" onclick="{!c.convertRecords}"></lightning:button>
                 </center>
             </div>
+            <!-- 
+                This section consists of success and failure ids along with the specific messages
+                (if any) of each record that is to be converted
+            -->
             <div class="slds-col slds-size_1-of-1 block">
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2 container">
@@ -208,7 +243,10 @@
             </div>
         </div>
     </lightning:card>
+    <!-- Container Card Section End -->
+    <!-- Modal Section Begin -->
     <div>
+        <!-- Modal used to give a name to the new mapping while creating and store the mapping -->
         <section aura:id="sobjectMappingModal" role="dialog" tabindex="-1" aria-labelledby="contactModalHeading" aria-modal="true" aria-describedby="contactModalBody" class="slds-modal">
             <!-- Modal Container -->
             <div class="slds-modal__container">
@@ -219,7 +257,6 @@
                 </header>
                 <!-- Modal Body ( consists of form ) -->
                 <div class="slds-modal__content slds-p-around_medium" id="contactModalBody">
-                    <!-- Validation added -->
                     <lightning:input aura:id="sobjectMappingName" label="SObject Mapping Name" messageWhenValueMissing="SObject Mapping Name is Mandatory" required="true"/>
                 </div>
                 <!-- Modal Footer ( consists of cancel and save buttons ) -->
@@ -231,5 +268,6 @@
         </section>
         <!-- Modal Backdrop -->
         <div aura:id="sobjectModalBackdrop" class="slds-backdrop"></div>
-    </div>    
+    </div>
+    <!-- Modal Section End -->
 </aura:component>

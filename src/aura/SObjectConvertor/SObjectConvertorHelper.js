@@ -1,4 +1,5 @@
 ({
+	// Function to fetch sObject Names from apex controller
 	fetchSObjects: function(component, event, helper) {
 		var getSObjectData = component.get('c.getSObjects');
 		getSObjectData.setCallback(this, function(response) {
@@ -8,13 +9,25 @@
 				var sObjectList = JSON.parse(data);
 				sObjectList.unshift('--None--');
 				component.set('v.sObjectList', sObjectList);
-			} else {
-				alert('Unable to fetch SObjects. '+JSON.stringify(response.getError()));
+			} else if(state === "ERROR") {
+				var errors = response.getError();
+				var errorMessage = '';
+				if (errors && Array.isArray(errors) && errors.length > 0) {
+				    errorMessage = errors[0].message;
+				}
+			    var toastEvent = $A.get("e.force:showToast");
+			    toastEvent.setParams({
+			        "title": "Error!",
+			        "type": "error",
+			        "message": errorMessage
+			    });
+			    toastEvent.fire();
 			}
 		});
 		$A.enqueueAction(getSObjectData);
 	},
 
+	// Function to fetch sObject Fields from the apex controller when an sObject is selected
 	fetchSObjectFields: function(component, event, helper) {
 		var sObjectName = event.getSource().get('v.value');
 		var getSObjectFieldData = component.get('c.getSObjectFieldMap');
@@ -23,41 +36,61 @@
 		if(sObjectFieldMap==null) {
 			sObjectFieldMap = {};
 		}
+		// Checking if sObjectFieldMap already contains fields for selected sObject
 		if(sObjectFieldMap[sObjectName]!=null) {
 			if(sObjectListName=='sourceSObject') {
 				component.set('v.sourceSObjectFields', sObjectFieldMap[sObjectName]);
 			} else {
 				component.set('v.destinationSObjectFields', sObjectFieldMap[sObjectName]);			
 			}
-			console.log('map has data');
 		}
 		else {
-			console.log('data fetched from server');
-			getSObjectFieldData.setParams({
-				sObjectNames: sObjectName
-			});
-			getSObjectFieldData.setCallback(this, function(response) {
-				var state = response.getState();
-				if(state==='SUCCESS') {
-					var data = response.getReturnValue();
-					var sObjectNewFieldMap = JSON.parse(data);
-					sObjectFieldMap[sObjectName] = sObjectNewFieldMap[sObjectName];
-					if(sObjectListName=='sourceSObject') {
-						component.set('v.sourceSObjectFields', sObjectFieldMap[sObjectName]);
-					} else {
-						component.set('v.destinationSObjectFields', sObjectFieldMap[sObjectName]);			
+			// Fetching fields from server if there is no entry in map for selected sObject
+			if(sObjectName!='--None--') {
+				getSObjectFieldData.setParams({
+					sObjectNames: sObjectName
+				});
+				getSObjectFieldData.setCallback(this, function(response) {
+					var state = response.getState();
+					if(state==='SUCCESS') {
+						var data = response.getReturnValue();
+						var sObjectNewFieldMap = JSON.parse(data);
+						sObjectFieldMap[sObjectName] = sObjectNewFieldMap[sObjectName];
+						if(sObjectListName=='sourceSObject') {
+							component.set('v.sourceSObjectFields', sObjectFieldMap[sObjectName]);
+						} else {
+							component.set('v.destinationSObjectFields', sObjectFieldMap[sObjectName]);			
+						}
+						component.set('v.sObjectFieldMap',sObjectFieldMap);
+						component.refreshMap();		
 					}
-					component.set('v.sObjectFieldMap',sObjectFieldMap);
-					component.refreshMap();		
-				}
-				else {
-					alert('Unable to fetch fields. '+JSON.stringify(response.getError()));
-				}
-			});
-			$A.enqueueAction(getSObjectFieldData);
+					else if(state==='ERROR') {
+						var errors = response.getError();
+						var errorMessage = '';
+						if (errors && Array.isArray(errors) && errors.length > 0) {
+						    errorMessage = errors[0].message;
+						}
+					    var toastEvent = $A.get("e.force:showToast");
+					    toastEvent.setParams({
+					        "title": "Error!",
+					        "type": "error",
+					        "message": errorMessage
+					    });
+					    toastEvent.fire();
+					}
+				});
+				$A.enqueueAction(getSObjectFieldData);				
+			} else {
+				if(sObjectListName=='sourceSObject') {
+					component.set('v.sourceSObjectFields', []);
+				} else {
+					component.set('v.destinationSObjectFields', []);			
+				}				
+			}
 		}	
 	},
 
+	// Function to fetch the records of a particular sObject based on the search text written
 	fetchRecords: function(component, event, helper) {
 		var sObjectName = component.find('sourceSObject').get('v.value');
 		var searchText = component.find('searchRecord').get('v.value');
@@ -93,6 +126,7 @@
 		}
 	},
 
+	// Function to convert records from source sObject to destination sObject
 	convertRecords: function(component, event, helper) {
 		var recordIdList = component.get('v.recordIdList');
 		var mapping = component.get('v.recordMap');
@@ -143,6 +177,7 @@
 		$A.enqueueAction(convertAction);
 	},
 
+	// Function to create a new record mapping between two sObjects and save it in custom settings
 	createNewMapping: function(component, event, helper) {
     	var field = component.find('sobjectMappingName');
     	if(field.get('v.validity').valid) {
@@ -175,6 +210,7 @@
 	    }
 	},
 
+	// Function to get SObject Mapping names from the apex controller
 	getSObjectMappingNames: function(component, event, helper) {
 		var getMappingAction = component.get('c.fetchSObjectMappingNames');
 		getMappingAction.setCallback(this, function(response) {
@@ -196,6 +232,8 @@
 		$A.enqueueAction(getMappingAction);
 	},
 
+	// Function to fetch sObject mapping from server on selection of an existing mapping
+	// Working but need to be optimized by saving the mapping on client side
 	getSObjectMapping: function(component, event, helper) {
 		var sObjectMappingName = event.getSource().get('v.value');
 		if(sObjectMappingName!='none') {
