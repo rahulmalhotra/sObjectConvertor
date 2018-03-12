@@ -142,6 +142,11 @@
 					for(var key in successMap) {
 						successMapList.push({ value: successMap[key], key: key });
 					}
+					if(failureMapList.length==0) {
+						this.showMessage(component, event, helper, 'Success!', 'success', 'Records converted successfully');
+					} else {
+						this.showMessage(component, event, helper, 'Warning!' ,'warning', 'Records converted partially. Check out the failure messages');
+					}
 					component.set('v.failureMap', failureMapList);
 					component.set('v.successMap', successMapList);					
 				} else if(resultObj.status=='exception') {
@@ -175,7 +180,7 @@
 	    			var resultMap = JSON.parse(resultMapString);
 	    			if(resultMap.success == 1) {
 	    				component.closeModal();
-	    				alert(resultMap.message);
+	    				this.showMessage(component, event, helper, 'Success!', 'success', resultMap.message);
 	    			} else if(resultMap.success == 0) {
 	    				this.showErrorMessage(component, event, helper, null, resultMap.message);
 	    			}
@@ -234,6 +239,16 @@
 			});
 			$A.enqueueAction(getMappingAction);			
 		}
+	},
+
+	showMessage: function(component, event, helper, title, type, message) {
+	    var toastEvent = $A.get("e.force:showToast");
+	    toastEvent.setParams({
+	        "title": title,
+	        "type": type,
+	        "message": message
+	    });
+	    toastEvent.fire();
 	},
 
 	// Function to show error toast
