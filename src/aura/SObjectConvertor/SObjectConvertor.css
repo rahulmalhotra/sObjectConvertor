@@ -44,3 +44,6 @@
 .THIS .hidden {
 	display: none;
 }
+.THIS .tableRow {
+	overflow: scroll !important;
+}

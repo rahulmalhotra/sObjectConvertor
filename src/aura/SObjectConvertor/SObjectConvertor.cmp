@@ -200,7 +200,7 @@
             <div class="slds-col slds-size_1-of-1 block">
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2 container">
-                        <table class="slds-table slds-table_bordered slds-table_cell-buffer border">
+                        <table class="slds-table slds-table_bordered slds-table_cell-buffer border slds-table_fixed-layout">
                             <thead>
                                 <tr class="slds-text-title_caps">
                                     <th scope="col" class="center">
@@ -211,8 +211,8 @@
                             <tbody>
                                 <aura:iteration items="{!v.successMap}" var="successObj">
                                     <tr>
-                                        <th scope="row" class="center">
-                                            <div class="slds-truncate"><a href="{!'/'+successObj.key}">{!successObj.key}</a> -> <a href="{!'/'+successObj.value}">{!successObj.value}</a></div>
+                                        <th scope="row" class="tableRow center">
+                                            <a href="{!'/'+successObj.key}">{!successObj.key}</a> -> <a href="{!'/'+successObj.value}">{!successObj.value}</a>
                                         </th>
                                     </tr>
                                 </aura:iteration>
@@ -220,7 +220,7 @@
                         </table>
                     </div>
                     <div class="slds-col slds-size_1-of-2 container">
-                        <table class="slds-table slds-table_bordered slds-table_cell-buffer border">
+                        <table class="slds-table slds-table_bordered slds-table_fixed-layout border slds-table_cell-buffer">
                             <thead>
                                 <tr class="slds-text-title_caps">
                                     <th scope="col" class="center">
@@ -231,8 +231,8 @@
                             <tbody>
                                 <aura:iteration items="{!v.failureMap}" var="failureObj">
                                     <tr>
-                                        <th scope="row" class="center">
-                                            <div class="slds-truncate"><a href="{!'/'+failureObj.key}">{!failureObj.key}</a> - {!failureObj.value}</div>
+                                        <th scope="row" class="tableRow center">
+                                            <a href="{!'/'+failureObj.key}">{!failureObj.key}</a> - {!failureObj.value}
                                         </th>
                                     </tr>
                                 </aura:iteration>

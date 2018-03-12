@@ -10,18 +10,7 @@
 				sObjectList.unshift('--None--');
 				component.set('v.sObjectList', sObjectList);
 			} else if(state === "ERROR") {
-				var errors = response.getError();
-				var errorMessage = '';
-				if (errors && Array.isArray(errors) && errors.length > 0) {
-				    errorMessage = errors[0].message;
-				}
-			    var toastEvent = $A.get("e.force:showToast");
-			    toastEvent.setParams({
-			        "title": "Error!",
-			        "type": "error",
-			        "message": errorMessage
-			    });
-			    toastEvent.fire();
+				this.showErrorMessage(component, event, helper, response, null);
 			}
 		});
 		$A.enqueueAction(getSObjectData);
@@ -65,18 +54,7 @@
 						component.refreshMap();		
 					}
 					else if(state==='ERROR') {
-						var errors = response.getError();
-						var errorMessage = '';
-						if (errors && Array.isArray(errors) && errors.length > 0) {
-						    errorMessage = errors[0].message;
-						}
-					    var toastEvent = $A.get("e.force:showToast");
-					    toastEvent.setParams({
-					        "title": "Error!",
-					        "type": "error",
-					        "message": errorMessage
-					    });
-					    toastEvent.fire();
+	    				this.showErrorMessage(component, event, helper, response, null);
 					}
 				});
 				$A.enqueueAction(getSObjectFieldData);				
@@ -113,16 +91,15 @@
 					if(searchResults.length==0) {
 						component.searchFocusRemoved();
 					}
-				} else {
+				} else if(state==='ERROR') {
 					component.searchFocusRemoved();
-					console.log('no records found');
+    				this.showErrorMessage(component, event, helper, response, null);
 				}
 			});
 			$A.enqueueAction(getRecords);			
 		}
 		else {
 			component.searchFocusRemoved();
-			console.log('search text length is less than 2');
 		}
 	},
 
@@ -168,10 +145,10 @@
 					component.set('v.failureMap', failureMapList);
 					component.set('v.successMap', successMapList);					
 				} else if(resultObj.status=='exception') {
-					alert(resultObj.message);
+    				this.showErrorMessage(component, event, helper, null, resultObj.message);
 				}
-			} else {
-				alert('Error in connecting with server');
+			} else if (state==='ERROR') {
+				this.showErrorMessage(component, event, helper, response, null);
 			}
 		});
 		$A.enqueueAction(convertAction);
@@ -200,10 +177,10 @@
 	    				component.closeModal();
 	    				alert(resultMap.message);
 	    			} else if(resultMap.success == 0) {
-	    				alert(resultMap.message);
+	    				this.showErrorMessage(component, event, helper, null, resultMap.message);
 	    			}
-	    		} else {
-					alert('Error in connecting with server');	    			
+	    		} else if(state === 'ERROR') {
+    				this.showErrorMessage(component, event, helper, response, null);
 	    		}
 	    	});
 	    	$A.enqueueAction(createMappingAction);
@@ -223,10 +200,10 @@
 					sObjectMapNames.unshift('none');
 					component.set('v.sObjectMapNames', sObjectMapNames);
 				} else if(resultMap.success == '0') {
-					alert(resultMap.message);
+    				this.showErrorMessage(component, event, helper, null, resultMap.message);
 				}
-			} else {
-				alert('Error in connecting with server');	    							
+			} else if(state === 'ERROR') {
+				this.showErrorMessage(component, event, helper, response, null);
 			}
 		});
 		$A.enqueueAction(getMappingAction);
@@ -249,13 +226,33 @@
 					if(resultMap.success == '1') {
 						component.set('v.recordMap', JSON.parse(resultMap.message));
 					} else if(resultMap.success == '0') {
-						alert(resultMap.message);
+	    				this.showErrorMessage(component, event, helper, null, resultMap.message);
 					}
-				} else {
-					alert('Error in connecting with server');	    							
+				} else if (state === 'ERROR') {
+    				this.showErrorMessage(component, event, helper, response, null);
 				}
 			});
 			$A.enqueueAction(getMappingAction);			
 		}
+	},
+
+	// Function to show error toast
+	showErrorMessage: function(component, event, helper, response, message) {
+		var errorMessage = 'Unknown Error';
+		if(response!=null) {
+			var errors = response.getError();
+			if (errors && Array.isArray(errors) && errors.length > 0) {
+			    errorMessage = errors[0].message;
+			}
+		} else if (message!=null) {
+			errorMessage = message;
+		}
+	    var toastEvent = $A.get("e.force:showToast");
+	    toastEvent.setParams({
+	        "title": "Error!",
+	        "type": "error",
+	        "message": errorMessage
+	    });
+	    toastEvent.fire();
 	}
 })
