@@ -1,3 +1,8 @@
+<!--
+    Copyright (c) 2018 - Present, Rahul Malhotra. All rights reserved.
+    Use of this source code is governed by a BSD 3-Clause License that can be found in the LICENSE.md file.
+-->
+
 <!-- Lightning Component -->
 <aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" controller="SObjectConvertorController" access="global">
     <!-- Handler to run getInitialData function when the component is loaded -->
@@ -138,8 +143,14 @@
                         </lightning:select>
                     </div>
                     <div class="slds-col slds-size_1-of-2 container addRow">
-                        <lightning:button name="addRow" variant="brand" onclick="{!c.addRow}" label="Add Row"></lightning:button>&nbsp;&nbsp;&nbsp;&nbsp;
-                        <lightning:button class="slds-text-color_inverse successButton" name="saveMapping" variant="success" onclick="{!c.saveMapping}" label="Save Mapping"></lightning:button>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-size_1-of-2">
+                                <center><lightning:button name="addRow" variant="brand" onclick="{!c.addRow}" label="Add Row"></lightning:button></center>
+                            </div>
+                            <div class="slds-size_1-of-2">
+                                <center><lightning:button class="slds-text-color_inverse successButton" name="saveMapping" variant="success" onclick="{!c.saveMapping}" label="Save Mapping"></lightning:button></center>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div aura:id="selectMappingDropdown" class="slds-grid slds-wrap hidden">

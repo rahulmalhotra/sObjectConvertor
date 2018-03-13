@@ -1,3 +1,8 @@
+/*
+    Copyright (c) 2018 - Present, Rahul Malhotra. All rights reserved.
+    Use of this source code is governed by a BSD 3-Clause License that can be found in the LICENSE.md file.
+*/
+
 ({
 	// Function to fetch sObject Names from apex controller
 	fetchSObjects: function(component, event, helper) {
