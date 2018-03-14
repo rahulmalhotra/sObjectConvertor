@@ -56,7 +56,7 @@
 							component.set('v.destinationSObjectFields', sObjectFieldMap[sObjectName]);			
 						}
 						component.set('v.sObjectFieldMap',sObjectFieldMap);
-						component.refreshMap();		
+						this.refreshMap(component, event, helper);		
 					}
 					else if(state==='ERROR') {
 	    				this.showErrorMessage(component, event, helper, response, null);
@@ -94,17 +94,17 @@
 					var searchResults = JSON.parse(searchResultString);
 					component.set('v.searchResults', searchResults);
 					if(searchResults.length==0) {
-						component.searchFocusRemoved();
+						this.searchFocusRemoved(component, event, helper);
 					}
 				} else if(state==='ERROR') {
-					component.searchFocusRemoved();
+					this.searchFocusRemoved(component, event, helper);
     				this.showErrorMessage(component, event, helper, response, null);
 				}
 			});
 			$A.enqueueAction(getRecords);			
 		}
 		else {
-			component.searchFocusRemoved();
+			this.searchFocusRemoved(component, event, helper);
 		}
 	},
 
@@ -184,10 +184,10 @@
 	    			var resultMapString = response.getReturnValue();
 	    			var resultMap = JSON.parse(resultMapString);
 	    			if(resultMap.success == 1) {
-	    				component.closeModal();
+	    				this.closeModal(component, event, helper);
 	    				this.getSObjectMappingNames(component, event, helper);
 	    				component.set('v.recordMap', null);
-	    				component.addRow();
+	    				this.addRow(component, event, helper);
 	    				this.showMessage(component, event, helper, 'Success!', 'success', resultMap.message);
 	    			} else if(resultMap.success == 0) {
 	    				this.showErrorMessage(component, event, helper, null, resultMap.message);
@@ -248,10 +248,71 @@
 			$A.enqueueAction(getMappingAction);			
 		} else {
 			component.set('v.recordMap', null);
-			component.addRow();
+			this.addRow(component, event, helper);
 		}
 	},
 
+    // Function used to close the sObject Mapping modal
+    closeModal: function(component, event, helper) {
+        var modal = component.find("sobjectMappingModal");
+        var modalBackdrop = component.find("sobjectModalBackdrop");
+        $A.util.removeClass(modal,"slds-fade-in-open");
+        $A.util.removeClass(modalBackdrop,"slds-backdrop_open");
+    },
+
+	// Function to add a new row in recordMap
+	addRow: function(component, event, helper) {
+		var recordMap = component.get('v.recordMap');
+		var sourceSObjectFields = component.get('v.sourceSObjectFields');
+		var destinationSObjectFields = component.get('v.destinationSObjectFields');
+		var element = {
+			rmak__Source_Sobject_Field__c: sourceSObjectFields[0],
+			rmak__Destination_SObject_Field__c: destinationSObjectFields[0]
+		};
+		if(recordMap==null)
+			recordMap = [];
+		recordMap.push(element);
+		component.set('v.recordMap', recordMap);		
+	},
+
+	// Function to refresh the recordMap attribute whenever a new sObject is selected from the dropdown
+	refreshMap: function(component, event, helper) {
+		var sourceSObject = component.find('sourceSObject').get('v.value');
+		var destinationSObject = component.find('destinationSObject').get('v.value');
+		var recordMap = component.get('v.recordMap');
+		// Refreshing the recordMap only when source and destination sObjet both have valid values
+		if(sourceSObject!=undefined && destinationSObject!=undefined && sourceSObject!='' && destinationSObject!='') {
+			// refreshMap called from helper when sObject is changed
+			if(event.getSource().get('v.name')==undefined) {
+				if(recordMap.length==0) {
+					this.addRow(component, event, helper);
+				}
+				else {
+					component.set('v.recordMap',null);
+					this.addRow(component, event, helper);
+					// Need to code... empty the mapping
+				}
+			} else {
+				// refreshMap called when a field value is changed in field row
+				// Need to be optimized - no working right now
+				var eventName = event.getSource().get('v.name');
+				if(eventName=='selectSourceSObject') {
+
+				} else if(eventName=='selectDestinationSObject') {
+
+				}
+			}
+		}
+	},
+
+	// Function to remove search suggestions
+	searchFocusRemoved: function(component, event, helper) {
+		var searchCombobox = component.find('searchCombobox');
+		$A.util.addClass(searchCombobox, 'slds-combobox-lookup');
+		$A.util.removeClass(searchCombobox, 'slds-is-open');
+	},
+
+	// Function to show message in toast
 	showMessage: function(component, event, helper, title, type, message) {
 	    var toastEvent = $A.get("e.force:showToast");
 	    toastEvent.setParams({

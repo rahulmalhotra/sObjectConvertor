@@ -29,12 +29,6 @@
     <!-- List of records that consists of source and destination sObject record ids -->
     <aura:attribute name="successMap" type="List"></aura:attribute>
     <!-- Aura attribute section end -->
-    <!-- Aura Methods Section Starts -->
-    <aura:method name="searchFocusRemoved" action="{!c.searchFocusRemoved}"></aura:method>
-    <aura:method name="refreshMap" action="{!c.refreshMap}"></aura:method>
-    <aura:method name="addRow" action="{!c.addRow}"></aura:method>
-    <aura:method name="closeModal" action="{!c.closeModal}"></aura:method>
-    <!-- Aura Method Section Ends -->
     <!-- Container Card Section Begin -->
     <lightning:card>
         <aura:set attribute="title"><b>sObject Convertor</b></aura:set>

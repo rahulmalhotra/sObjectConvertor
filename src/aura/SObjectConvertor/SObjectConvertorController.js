@@ -23,19 +23,12 @@
 		$A.util.removeClass(searchCombobox, 'slds-combobox-lookup');
 	},
 
-	// Function to remove search suggestions
-	searchFocusRemoved: function(component, event, helper) {
-		var searchCombobox = component.find('searchCombobox');
-		$A.util.addClass(searchCombobox, 'slds-combobox-lookup');
-		$A.util.removeClass(searchCombobox, 'slds-is-open');
-	},
-
 	// Function to hide the search suggestions when a record is selected
 	searchBlurred: function(component, event, helper) {
 		var searchText = component.find('searchRecord').get('v.value');
 		if(searchText!=undefined) {
 			if(searchText.length==0) {
-				component.searchFocusRemoved(component, event, helper);
+				helper.searchFocusRemoved(component, event, helper);
 			}					
 		}
 	},
@@ -45,7 +38,7 @@
 		var searchText = component.find('searchRecord').get('v.value');
 		component.find('searchRecord').set('v.value',event.currentTarget.dataset.record);
 		component.find('inputRecordId').set('v.value',event.currentTarget.dataset.recordid);
-		component.searchFocusRemoved();
+		helper.searchFocusRemoved(component, event, helper);
 	},
 
 	// Function to add a record selected as a search result to the list of record Ids to be converted
@@ -65,47 +58,12 @@
 
 	// Function to refresh the recordMap attribute whenever a new sObject is selected from the dropdown
 	refreshMap: function(component, event, helper) {
-		var sourceSObject = component.find('sourceSObject').get('v.value');
-		var destinationSObject = component.find('destinationSObject').get('v.value');
-		var recordMap = component.get('v.recordMap');
-		// Refreshing the recordMap only when source and destination sObjet both have valid values
-		if(sourceSObject!=undefined && destinationSObject!=undefined && sourceSObject!='' && destinationSObject!='') {
-			// refreshMap called from helper when sObject is changed
-			if(event.getSource().get('v.name')==undefined) {
-				if(recordMap.length==0) {
-					component.addRow();
-				}
-				else {
-					component.set('v.recordMap',null);
-					component.addRow();
-					// Need to code... empty the mapping
-				}
-			} else {
-				// refreshMap called when a field value is changed in field row
-				// Need to be optimized - no working right now
-				var eventName = event.getSource().get('v.name');
-				if(eventName=='selectSourceSObject') {
-
-				} else if(eventName=='selectDestinationSObject') {
-
-				}
-			}
-		}
+		helper.refreshMap(component, event, helper);
 	},
 
 	// Function to add a new row in recordMap
 	addRow: function(component, event, helper) {
-		var recordMap = component.get('v.recordMap');
-		var sourceSObjectFields = component.get('v.sourceSObjectFields');
-		var destinationSObjectFields = component.get('v.destinationSObjectFields');
-		var element = {
-			rmak__Source_Sobject_Field__c: sourceSObjectFields[0],
-			rmak__Destination_SObject_Field__c: destinationSObjectFields[0]
-		};
-		if(recordMap==null)
-			recordMap = [];
-		recordMap.push(element);
-		component.set('v.recordMap', recordMap);		
+		helper.addRow(component, event, helper);
 	},
 
 	/*
@@ -134,10 +92,7 @@
 
     // Function used to close the sObject Mapping modal
     closeModal: function(component, event, helper) {
-        var modal = component.find("sobjectMappingModal");
-        var modalBackdrop = component.find("sobjectModalBackdrop");
-        $A.util.removeClass(modal,"slds-fade-in-open");
-        $A.util.removeClass(modalBackdrop,"slds-backdrop_open");
+    	helper.closeModal(component, event, helper);
     },
 
     // Function used to store newly created mapping
@@ -150,7 +105,7 @@
     	var selectMappingDropdownDiv = component.find('selectMappingDropdownDiv');
     	if(component.find("selectMappingType").get("v.value")==1) {
     		component.set("v.recordMap", null);
-    		component.addRow();
+    		helper.addRow(component, event, helper);
     	}
     	$A.util.toggleClass(selectMappingDropdownDiv, 'hidden');
     },
