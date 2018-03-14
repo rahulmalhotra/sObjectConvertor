@@ -126,13 +126,6 @@
 
 	// Function to save the newly created mapping on the server
 	saveMapping: function(component, event, helper) {
-		var recordMap = component.get('v.recordMap');
-		if(recordMap[0].Id!=undefined && recordMap[0].rmak__SObject_Mapping_Name__c!=undefined) {
-			component.find("sobjectMappingName").set("v.value", recordMap[0].rmak__SObject_Mapping_Name__c);
-			component.find("sobjectMappingName").set("v.readonly", true);
-		} else {
-			component.find("sobjectMappingName").set("v.readonly", false);			
-		}
         var modal = component.find("sobjectMappingModal");
         var modalBackdrop = component.find("sobjectModalBackdrop");
         $A.util.addClass(modal,"slds-fade-in-open");

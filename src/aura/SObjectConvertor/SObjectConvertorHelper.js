@@ -185,6 +185,9 @@
 	    			var resultMap = JSON.parse(resultMapString);
 	    			if(resultMap.success == 1) {
 	    				component.closeModal();
+	    				this.getSObjectMappingNames(component, event, helper);
+	    				component.set('v.recordMap', null);
+	    				component.addRow();
 	    				this.showMessage(component, event, helper, 'Success!', 'success', resultMap.message);
 	    			} else if(resultMap.success == 0) {
 	    				this.showErrorMessage(component, event, helper, null, resultMap.message);
@@ -193,7 +196,7 @@
     				this.showErrorMessage(component, event, helper, response, null);
 	    		}
 	    	});
-	    	$A.enqueueAction(createMappingAction);
+	    	$A.enqueueAction(saveMappingAction);
 	    }
 	},
 

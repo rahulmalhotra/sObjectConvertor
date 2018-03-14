@@ -262,7 +262,7 @@
                 </header>
                 <!-- Modal Body ( consists of form ) -->
                 <div class="slds-modal__content slds-p-around_medium" id="contactModalBody">
-                    <lightning:input aura:id="sobjectMappingName" label="SObject Mapping Name" messageWhenValueMissing="SObject Mapping Name is Mandatory" required="true"/>
+                    <lightning:input aura:id="sobjectMappingName" label="SObject Mapping Name" messageWhenValueMissing="SObject Mapping Name is Mandatory" value="{!v.recordMap[0].rmak__SObject_Mapping_Name__c}" required="true"/>
                 </div>
                 <!-- Modal Footer ( consists of cancel and save buttons ) -->
                 <footer class="slds-modal__footer">
