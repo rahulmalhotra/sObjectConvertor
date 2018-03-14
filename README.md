@@ -56,7 +56,7 @@ So below are the tools or softwares I use personally :-
 
 ## Todo
 
-- [ ] Update previous mapping on save if existing mapping is used.
+- [x] Update previous mapping on save if existing mapping is used.
 - [ ] Add validations on the client side to ensure mapping of fields with similar data type.
 - [ ] Option to delete the existing mapping.
 - [ ] Adding a checkbox to delete the source object while creating destination object.

@@ -150,12 +150,11 @@ public class SObjectConvertorController {
 
     // Method to save sObject mapping created by user
     @AuraEnabled
-    public static String createSObjectMapping(String sObjectMappingString) {
+    public static String saveSObjectMapping(String sObjectMappingString) {
         List<rmak__SObjectConvertorMapping__c> sObjectMappingList = (List<rmak__SObjectConvertorMapping__c>) JSON.deserialize(sObjectMappingString, List<rmak__SObjectConvertorMapping__c>.class);
         Map<String, String> resultMap = new Map<String, String>();
-        System.debug(sObjectMappingList);
         try {
-            insert sObjectMappingList;
+            upsert sObjectMappingList;
             resultMap.put('success', '1');
             resultMap.put('message', 'Mapping Saved Successfully');
         } catch(Exception e) {
@@ -192,7 +191,7 @@ public class SObjectConvertorController {
     public static String fetchSObjectMapping(String sObjectMappingName) {
         Map<String, String> resultMap = new Map<String, String>();
         try {
-            List<rmak__SObjectConvertorMapping__c> sObjectMappingList = [SELECT rmak__Source_Sobject_Field__c, rmak__Destination_SObject_Field__c FROM rmak__SObjectConvertorMapping__c WHERE rmak__SObject_Mapping_Name__c =:sObjectMappingName];
+            List<rmak__SObjectConvertorMapping__c> sObjectMappingList = [SELECT rmak__SObject_Mapping_Name__c, rmak__Source_Sobject_Field__c, rmak__Destination_SObject_Field__c FROM rmak__SObjectConvertorMapping__c WHERE rmak__SObject_Mapping_Name__c =:sObjectMappingName];
             resultMap.put('success', '1');
             resultMap.put('message', JSON.serialize(sObjectMappingList));
         } catch(Exception e) {
