@@ -149,18 +149,14 @@
                                 <option value="2">Choose Existing Mapping</option>
                             </lightning:select>
                         </div>
-                    </div>
-                    <div aura:id="selectMappingDropdown" class="slds-grid slds-wrap hidden">
-                        <div class="slds-col slds-size_1-of-2 container">
+                        <div aura:id="selectMappingDropdown" class="slds-col slds-size_1-of-2 container hidden">
                             <lightning:select name="selectMapping" label="Select Mapping" onchange="{!c.getSObjectMapping}">
                                 <aura:iteration var="mappingName" items="{!v.sObjectMapNames}">
                                     <option value="{!mappingName}">{!mappingName}</option>
                                 </aura:iteration>
                             </lightning:select>
                         </div>
-                        <div class="slds-col slds-size_1-of-2 container">
-                        </div>
-                    </div>                    
+                    </div>
                 </lightning:card>
             </div>
             <!-- 
@@ -221,7 +217,7 @@
                                 <aura:iteration items="{!v.successMap}" var="successObj">
                                     <tr>
                                         <th scope="row" class="tableRow center">
-                                            <a href="{!'/'+successObj.key}">{!successObj.key}</a> -> <a href="{!'/'+successObj.value}">{!successObj.value}</a>
+                                            <a href="{!'/'+successObj.key}" target="_blank">{!successObj.key}</a> -> <a href="{!'/'+successObj.value}" target="_blank">{!successObj.value}</a>
                                         </th>
                                     </tr>
                                 </aura:iteration>
@@ -241,7 +237,7 @@
                                 <aura:iteration items="{!v.failureMap}" var="failureObj">
                                     <tr>
                                         <th scope="row" class="tableRow center">
-                                            <a href="{!'/'+failureObj.key}">{!failureObj.key}</a> - {!failureObj.value}
+                                            <a href="{!'/'+failureObj.key}" target="_blank">{!failureObj.key}</a> - {!failureObj.value}
                                         </th>
                                     </tr>
                                 </aura:iteration>

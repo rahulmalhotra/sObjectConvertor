@@ -165,7 +165,7 @@
 	},
 
 	// Function to create a new record mapping between two sObjects and save it in custom settings
-	createNewMapping: function(component, event, helper) {
+	upsertMapping: function(component, event, helper) {
     	var field = component.find('sobjectMappingName');
     	if(field.get('v.validity').valid) {
     		var sobjectMappingName = field.get('v.value');
@@ -174,11 +174,11 @@
 	    		recordMap[i].name = sobjectMappingName.substring(0,25) +' Record '+ i;
 	    		recordMap[i].rmak__SObject_Mapping_Name__c = sobjectMappingName;
 	    	}
-	    	var createMappingAction = component.get('c.createSObjectMapping');
-	    	createMappingAction.setParams({
+	    	var saveMappingAction = component.get('c.saveSObjectMapping');
+	    	saveMappingAction.setParams({
 	    		sObjectMappingString: JSON.stringify(recordMap)
 	    	});
-	    	createMappingAction.setCallback(this, function(response) {
+	    	saveMappingAction.setCallback(this, function(response) {
 	    		var state = response.getState();
 	    		if(state === 'SUCCESS') {
 	    			var resultMapString = response.getReturnValue();
@@ -243,6 +243,9 @@
 				}
 			});
 			$A.enqueueAction(getMappingAction);			
+		} else {
+			component.set('v.recordMap', null);
+			component.addRow();
 		}
 	},
 
