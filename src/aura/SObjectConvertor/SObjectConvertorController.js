@@ -147,8 +147,12 @@
 
     // Function used to show/hide the existing mapping dropdown based on the selection of mapping type
     toggleSelectMapping: function(component, event, helper) {
-    	var selectMappingDropdown = component.find('selectMappingDropdown');
-    	$A.util.toggleClass(selectMappingDropdown, 'hidden');
+    	var selectMappingDropdownDiv = component.find('selectMappingDropdownDiv');
+    	if(component.find("selectMappingType").get("v.value")==1) {
+    		component.set("v.recordMap", null);
+    		component.addRow();
+    	}
+    	$A.util.toggleClass(selectMappingDropdownDiv, 'hidden');
     },
 
     /*
@@ -156,6 +160,15 @@
     	and set it on the layout
     */
     getSObjectMapping: function(component, event, helper) {
-    	helper.getSObjectMapping(component, event, helper);
+		var sourceSObject = component.find('sourceSObject').get('v.value');
+		var destinationSObject = component.find('destinationSObject').get('v.value');
+		// Refreshing the recordMap only when source and destination sObjet both have valid values
+		if(sourceSObject!=undefined && destinationSObject!=undefined && sourceSObject!='' && destinationSObject!='') {
+	    	helper.getSObjectMapping(component, event, helper);
+	    }
+	    else {
+	    	helper.showErrorMessage(component, event, helper, null, 'Please select source and destination objects first');
+	    	component.find('selectMappingDropdown').set('v.value',component.get('v.sObjectMapNames')[0]);
+	    }
     }
 })

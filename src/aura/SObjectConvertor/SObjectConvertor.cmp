@@ -144,13 +144,13 @@
                     </aura:set>
                     <div class="slds-grid slds-wrap">
                         <div class="slds-col slds-size_1-of-2 container">
-                            <lightning:select name="selectMappingType" label="Mapping Type" onchange="{!c.toggleSelectMapping}">
+                            <lightning:select aura:id="selectMappingType" name="selectMappingType" label="Mapping Type" onchange="{!c.toggleSelectMapping}">
                                 <option value="1">Create a New Mapping</option>
                                 <option value="2">Choose Existing Mapping</option>
                             </lightning:select>
                         </div>
-                        <div aura:id="selectMappingDropdown" class="slds-col slds-size_1-of-2 container hidden">
-                            <lightning:select name="selectMapping" label="Select Mapping" onchange="{!c.getSObjectMapping}">
+                        <div aura:id="selectMappingDropdownDiv" class="slds-col slds-size_1-of-2 container hidden">
+                            <lightning:select aura:id="selectMappingDropdown" name="selectMapping" label="Select Mapping" onchange="{!c.getSObjectMapping}">
                                 <aura:iteration var="mappingName" items="{!v.sObjectMapNames}">
                                     <option value="{!mappingName}">{!mappingName}</option>
                                 </aura:iteration>
