@@ -8,5 +8,9 @@
         <members>*</members>
         <name>AuraDefinitionBundle</name>
     </types>
+    <types>
+        <members>SObjectConvertorMapping__c</members>
+        <name>CustomObject</name>
+    </types>
     <version>36.0</version>
 </Package>
