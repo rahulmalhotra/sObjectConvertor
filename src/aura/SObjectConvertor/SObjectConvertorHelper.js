@@ -117,7 +117,7 @@
 
 		var mapToSend = {};
 		for(var i=0;i<mapping.length;i++) {
-			mapToSend[mapping[i].rmak__Source_Sobject_Field__c] = mapping[i].rmak__Destination_SObject_Field__c;
+			mapToSend[mapping[i].Source_Sobject_Field__c] = mapping[i].Destination_SObject_Field__c;
 		}
 
 		var inputData = {
@@ -172,7 +172,7 @@
 	    	var recordMap = component.get('v.recordMap');
 	    	for(var i=0;i<recordMap.length;i++) {
 	    		recordMap[i].name = sobjectMappingName.substring(0,25) +' Record '+ i;
-	    		recordMap[i].rmak__SObject_Mapping_Name__c = sobjectMappingName;
+	    		recordMap[i].SObject_Mapping_Name__c = sobjectMappingName;
 	    	}
 	    	var saveMappingAction = component.get('c.saveSObjectMapping');
 	    	saveMappingAction.setParams({
@@ -266,8 +266,8 @@
 		var sourceSObjectFields = component.get('v.sourceSObjectFields');
 		var destinationSObjectFields = component.get('v.destinationSObjectFields');
 		var element = {
-			rmak__Source_Sobject_Field__c: sourceSObjectFields[0],
-			rmak__Destination_SObject_Field__c: destinationSObjectFields[0]
+			Source_Sobject_Field__c: sourceSObjectFields[0],
+			Destination_SObject_Field__c: destinationSObjectFields[0]
 		};
 		if(recordMap==null)
 			recordMap = [];
