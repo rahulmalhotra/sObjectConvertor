@@ -151,7 +151,7 @@ public class SObjectConvertorController {
     // Method to save sObject mapping created by user
     @AuraEnabled
     public static String saveSObjectMapping(String sObjectMappingString) {
-        List<rmak__SObjectConvertorMapping__c> sObjectMappingList = (List<rmak__SObjectConvertorMapping__c>) JSON.deserialize(sObjectMappingString, List<rmak__SObjectConvertorMapping__c>.class);
+        List<SObjectConvertorMapping__c> sObjectMappingList = (List<SObjectConvertorMapping__c>) JSON.deserialize(sObjectMappingString, List<SObjectConvertorMapping__c>.class);
         Map<String, String> resultMap = new Map<String, String>();
         try {
             upsert sObjectMappingList;
@@ -172,10 +172,10 @@ public class SObjectConvertorController {
     public static String fetchSObjectMappingNames() {
         Map<String, String> resultMap = new Map<String, String>();
         try {
-            List<AggregateResult> sObjectMappingList = [SELECT rmak__SObject_Mapping_Name__c FROM rmak__SObjectConvertorMapping__c GROUP BY rmak__SObject_Mapping_Name__c];
+            List<AggregateResult> sObjectMappingList = [SELECT SObject_Mapping_Name__c FROM SObjectConvertorMapping__c GROUP BY SObject_Mapping_Name__c];
             List<String> sObjectMappingNamesList = new List<String>();
             for(AggregateResult agr: sObjectMappingList) {
-                sObjectMappingNamesList.add(String.valueOf(agr.get('rmak__SObject_Mapping_Name__c')));
+                sObjectMappingNamesList.add(String.valueOf(agr.get('SObject_Mapping_Name__c')));
             }
             resultMap.put('success', '1');
             resultMap.put('message', JSON.serialize(sObjectMappingNamesList));
@@ -191,7 +191,7 @@ public class SObjectConvertorController {
     public static String fetchSObjectMapping(String sObjectMappingName) {
         Map<String, String> resultMap = new Map<String, String>();
         try {
-            List<rmak__SObjectConvertorMapping__c> sObjectMappingList = [SELECT rmak__SObject_Mapping_Name__c, rmak__Source_Sobject_Field__c, rmak__Destination_SObject_Field__c FROM rmak__SObjectConvertorMapping__c WHERE rmak__SObject_Mapping_Name__c =:sObjectMappingName];
+            List<SObjectConvertorMapping__c> sObjectMappingList = [SELECT SObject_Mapping_Name__c, Source_Sobject_Field__c, Destination_SObject_Field__c FROM SObjectConvertorMapping__c WHERE SObject_Mapping_Name__c =:sObjectMappingName];
             resultMap.put('success', '1');
             resultMap.put('message', JSON.serialize(sObjectMappingList));
         } catch(Exception e) {
