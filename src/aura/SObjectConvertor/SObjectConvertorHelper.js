@@ -114,6 +114,7 @@
 		var mapping = component.get('v.recordMap');
 		var sourceObj = component.find('sourceSObject').get('v.value');
 		var destinationObj = component.find('destinationSObject').get('v.value');
+		var successIdSet = new Set();
 
 		var mapToSend = {};
 		for(var i=0;i<mapping.length;i++) {
@@ -145,6 +146,7 @@
 					}
 					var successMapList = [];
 					for(var key in successMap) {
+						successIdSet.add(key);
 						successMapList.push({ value: successMap[key], key: key });
 					}
 					if(failureMapList.length==0) {
@@ -152,6 +154,13 @@
 					} else {
 						this.showMessage(component, event, helper, 'Warning!' ,'warning', 'Records converted partially. Check out the failure messages');
 					}
+					var recordIdListNew = [];
+					for(var i=0; i<recordIdList.length; i++) {
+						if(!successIdSet.has(recordIdList[i])) {
+							recordIdListNew.push(recordIdList[i]);
+						}
+					}
+					component.set('v.recordIdList', recordIdListNew);
 					component.set('v.failureMap', failureMapList);
 					component.set('v.successMap', successMapList);					
 				} else if(resultObj.status=='exception') {
